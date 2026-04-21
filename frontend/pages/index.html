@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vistru — Nigeria's remote construction supervision platform. Connect clients, engineers, suppliers, and lawyers through one trusted system with AI monitoring and escrow-protected payments.">
+  <title>Vistru — Remote Construction Supervision Platform</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/landing.css">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="page-loader">
+  <div class="logo">Vis<span>tru</span></div>
+</div>
+
+<!-- Navbar (loaded dynamically) -->
+<div id="navbar-container"></div>
+
+<!-- ═══════════════════════════════════════
+     HERO SECTION
+     ═══════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="hero-content animate-fadeUp">
+      <div class="hero-badge">
+        <span data-i18n="hero_badge">Remote Construction Supervision — Nigeria</span>
+      </div>
+      <h1>
+        <span data-i18n="hero_title_1">Build with</span>
+        <em data-i18n="hero_title_em"> confidence,</em><br>
+        <span data-i18n="hero_title_2">from anywhere.</span>
+      </h1>
+      <p data-i18n="hero_sub">
+        Vistru connects clients, licensed engineers, material suppliers, and legal professionals through one trusted platform — with AI-powered site monitoring and escrow-protected payments, so your project is never out of sight.
+      </p>
+      <div class="hero-actions">
+        <a href="auth/register.html" class="btn btn-primary btn-lg" data-i18n="hero_cta_primary">Start a Project</a>
+        <button class="btn btn-outline btn-lg" onclick="scrollToSection('how-it-works')" data-i18n="hero_cta_outline">How it Works ↓</button>
+      </div>
+    </div>
+    <div class="hero-visual animate-fadeUp" style="animation-delay:0.2s">
+      <div class="hero-card-stack">
+        <div class="hero-float-card card-1">
+          <div class="hfc-icon">🏗️</div>
+          <div>
+            <div class="hfc-title">M4 — Roofing</div>
+            <div class="hfc-sub">Filed complete · AI verified</div>
+          </div>
+          <span class="badge badge-amber">Awaiting Release</span>
+        </div>
+        <div class="hero-float-card card-2">
+          <div class="hfc-icon">🤖</div>
+          <div>
+            <div class="hfc-title">AI Report Generated</div>
+            <div class="hfc-sub">200 cement bags counted on site</div>
+          </div>
+          <span class="badge badge-green">✓ Verified</span>
+        </div>
+        <div class="hero-float-card card-3">
+          <div class="hfc-icon">🔒</div>
+          <div>
+            <div class="hfc-title">Escrow Released</div>
+            <div class="hfc-sub">₦9,100,000 → Engr. Chidi Eze</div>
+          </div>
+          <span class="badge badge-green">Paid</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     STATS BAR
+     ═══════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-number">6</div>
+    <div class="stat-label" data-i18n="stat_sections">Platform Sections</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">24/7</div>
+    <div class="stat-label" data-i18n="stat_monitoring">AI + CCTV Monitoring</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">100%</div>
+    <div class="stat-label" data-i18n="stat_verified">Verified Professionals</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">Escrow</div>
+    <div class="stat-label" data-i18n="stat_escrow">Protected Payments</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HOW IT WORKS
+     ═══════════════════════════════════════ -->
+<section class="section how-section" id="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label" data-i18n="how_label">Process</div>
+      <h2 class="section-title" data-i18n="how_title">From land to handover,<br>fully supervised.</h2>
+      <p class="section-sub" data-i18n="how_sub">Every stage of your building project is managed transparently through Vistru's verified pipeline.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">STEP 01</div>
+        <div class="step-icon">📄</div>
+        <h3 data-i18n="step1_title">Land Document Verification</h3>
+        <p data-i18n="step1_desc">Upload scanned land ownership documents. A platform lawyer verifies legitimacy and confirms zero dispute before any work begins.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">STEP 02</div>
+        <div class="step-icon">📐</div>
+        <h3 data-i18n="step2_title">Drawing Upload & BOQ Bidding</h3>
+        <p data-i18n="step2_desc">Upload architectural and structural drawings. Licensed engineers submit competitive Bills of Quantity. You select the best.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">STEP 03</div>
+        <div class="step-icon">⚖️</div>
+        <h3 data-i18n="step3_title">Contract Preparation</h3>
+        <p data-i18n="step3_desc">The platform lawyer drafts a binding contract between client and engineer. Arbitration is available at any point if disputes arise.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">STEP 04</div>
+        <div class="step-icon">🔒</div>
+        <h3 data-i18n="step4_title">Milestone Escrow Payments</h3>
+        <p data-i18n="step4_desc">Fund each milestone into escrow. Funds are released to the engineer only after you confirm completion via CCTV and AI reports.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">STEP 05</div>
+        <div class="step-icon">📹</div>
+        <h3 data-i18n="step5_title">AI + CCTV Site Monitoring</h3>
+        <p data-i18n="step5_desc">Vistru agents deploy cameras at strategic positions. AI monitors progress, counts materials, and sends you periodic reports.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">STEP 06</div>
+        <div class="step-icon">🏠</div>
+        <h3 data-i18n="step6_title">Final Inspection & Handover</h3>
+        <p data-i18n="step6_desc">Vistru conducts a final inspection. You confirm satisfactory completion, escrow is released, and the project is formally handed over.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PLATFORM OVERVIEW
+     ═══════════════════════════════════════ -->
+<section class="section overview-section" id="overview">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">System Overview</div>
+      <h2 class="section-title">One platform.<br>Every stakeholder.</h2>
+      <p class="section-sub">A single connected system that keeps every party accountable at every stage of your construction project.</p>
+    </div>
+    <div class="overview-grid">
+      <div class="overview-card">
+        <div class="ov-icon">🏗️</div>
+        <h4>Client & Engineer Flow</h4>
+        <p>The client uploads land documents and drawings. Engineers receive notifications, review drawings, and submit BOQs. The client selects the best BOQ and the lawyer prepares a binding contract. Payment flows through escrow, released per completed milestone.</p>
+      </div>
+      <div class="overview-card">
+        <div class="ov-icon">🏪</div>
+        <h4>Supplier Integration</h4>
+        <p>Suppliers display materials and store location. Clients browse nearby suppliers, select materials per the BOQ, and pay into escrow. Once delivery is confirmed on site, escrow releases payment to the supplier automatically.</p>
+      </div>
+      <div class="overview-card">
+        <div class="ov-icon">⚖️</div>
+        <h4>Legal & Arbitration</h4>
+        <p>Platform lawyers are onboarded by Vistru. They verify land titles, draft contracts, and handle arbitration. If a dispute arises, either client or engineer can file through the platform. Location-based assignment ensures proximity.</p>
+      </div>
+      <div class="overview-card">
+        <div class="ov-icon">📹</div>
+        <h4>CCTV + AI Monitoring</h4>
+        <p>Vistru agents physically deploy CCTV cameras to sites. The AI interprets footage — tracking milestones, counting materials, reporting progress. Clients receive live feeds and AI reports enabling confident payment decisions from anywhere.</p>
+      </div>
+      <div class="overview-card">
+        <div class="ov-icon">🔒</div>
+        <h4>Escrow System</h4>
+        <p>All client payments are received and held by escrow. A percentage charge applies to every transaction. Funds are only released when the client gives explicit confirmation — protecting all parties at every stage.</p>
+      </div>
+      <div class="overview-card">
+        <div class="ov-icon">💼</div>
+        <h4>Engineer Project Loans</h4>
+        <p>Because engineer payment depends on milestone completion, engineers can apply for project loans to manage workers' wages and site costs. Escrow automatically settles any outstanding loan when milestone payment is released.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PORTALS / ROLES
+     ═══════════════════════════════════════ -->
+<section class="section portals-section" id="portals">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label" data-i18n="portals_label">Portals</div>
+      <h2 class="section-title" data-i18n="portals_title">Built for every stakeholder.</h2>
+      <p class="section-sub" data-i18n="portals_sub">Each participant has a dedicated dashboard designed around their specific workflow and responsibilities.</p>
+    </div>
+    <div class="roles-grid">
+      <a href="auth/register.html?role=client" class="role-card">
+        <div class="role-icon">👤</div>
+        <h3 data-i18n="role_client">Client</h3>
+        <p data-i18n="role_client_desc">Upload land documents, select engineers via BOQ, monitor CCTV feeds, approve escrow payments, and file disputes.</p>
+        <div class="role-link" data-i18n="portal_access">Access Portal →</div>
+      </a>
+      <a href="auth/register.html?role=engineer" class="role-card">
+        <div class="role-icon">🏗️</div>
+        <h3 data-i18n="role_engineer">Civil Engineer</h3>
+        <p data-i18n="role_engineer_desc">Receive project notifications, review drawings, submit BOQs, track milestones, apply for project loans, and manage credentials.</p>
+        <div class="role-link" data-i18n="portal_access">Access Portal →</div>
+      </a>
+      <a href="auth/register.html?role=supplier" class="role-card">
+        <div class="role-icon">🏪</div>
+        <h3 data-i18n="role_supplier">Material Supplier</h3>
+        <p data-i18n="role_supplier_desc">List your inventory and store location. Receive material orders from clients, manage deliveries, and collect escrow releases.</p>
+        <div class="role-link" data-i18n="portal_access">Access Portal →</div>
+      </a>
+      <a href="auth/login.html?role=lawyer" class="role-card">
+        <div class="role-icon">⚖️</div>
+        <h3 data-i18n="role_lawyer">Legal Personnel</h3>
+        <p data-i18n="role_lawyer_desc">Verify land titles, draft client-engineer contracts, and manage arbitration cases for disputes on active projects.</p>
+        <div class="role-link" data-i18n="portal_access">Access Portal →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CTA BANNER
+     ═══════════════════════════════════════ -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="cta-inner">
+      <div>
+        <h2>Ready to supervise your project remotely?</h2>
+        <p>Join Vistru today. Land verification to final handover — fully managed, fully transparent.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="auth/register.html" class="btn btn-primary btn-lg">Start a Project Free</a>
+        <a href="auth/login.html" class="btn btn-outline btn-lg">Login</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner container">
+    <div class="footer-brand">
+      <div class="footer-logo">Vis<span>tru</span></div>
+      <p class="footer-desc" data-i18n="footer_desc">Nigeria's remote construction supervision platform — securing projects from land verification to handover, with AI monitoring and escrow-protected payments.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_platform">Platform</h4>
+      <a onclick="scrollToSection('how-it-works')" data-i18n="footer_how">How it Works</a>
+      <a onclick="scrollToSection('overview')" data-i18n="footer_overview">System Overview</a>
+      <a onclick="scrollToSection('overview')" data-i18n="footer_cctv">CCTV & AI</a>
+      <a onclick="scrollToSection('overview')" data-i18n="footer_escrow">Escrow System</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_portals">Portals</h4>
+      <a href="auth/register.html?role=client"   data-i18n="role_client">Client</a>
+      <a href="auth/register.html?role=engineer" data-i18n="role_engineer">Engineer</a>
+      <a href="auth/register.html?role=supplier" data-i18n="role_supplier">Supplier</a>
+      <a href="auth/login.html?role=lawyer"      data-i18n="role_lawyer">Legal</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_company">Company</h4>
+      <a data-i18n="footer_about">About Vistru</a>
+      <a data-i18n="footer_contact">Contact</a>
+      <a data-i18n="footer_privacy">Privacy Policy</a>
+      <a data-i18n="footer_terms">Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span data-i18n="footer_copy">© 2025 Vistru Technologies Ltd · All rights reserved</span>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="../js/i18n.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+// ── Load navbar ──
+fetch('../components/navbar.html')
+  .then(r => r.text())
+  .then(html => {
+    document.getElementById('navbar-container').innerHTML = html;
+    updateNavAuth();
+    setActiveNavLink();
+  });
+
+// ── Hide page loader ──
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('page-loader');
+    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 400); }
+  }, 500);
+});
+
+// ── Scroll to section ──
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Navbar scroll effect ──
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  if (nav) nav.style.background = window.scrollY > 20
+    ? 'rgba(11,31,58,0.99)'
+    : 'rgba(11,31,58,0.97)';
+});
+
+// ── Animate steps on scroll ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 100);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.step-card, .overview-card, .role-card').forEach(el => observer.observe(el));
+
+// ── Redirect logged-in users away from landing ──
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof VistruAPI !== 'undefined' && VistruAPI.Auth.isLoggedIn()) {
+    const user = VistruAPI.Auth.getUser();
+    if (user) {
+      const dashMap = {
+        client  : 'client/dashboard.html',
+        engineer: 'engineer/dashboard.html',
+        supplier: 'supplier/dashboard.html',
+        lawyer  : 'lawyer/dashboard.html',
+        admin   : 'admin/dashboard.html'
+      };
+      // Don't auto-redirect — just show the dashboard link in nav
+    }
+  }
+});
+</script>
+
+</body>
+</html>

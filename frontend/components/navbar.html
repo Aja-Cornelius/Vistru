@@ -1,0 +1,285 @@
+<!-- ═══════════════════════════════════════════════════════════
+     VISTRU — Shared Navbar Component
+     Include in every page with JS fetch or server-side include
+     ═══════════════════════════════════════════════════════════ -->
+<nav class="navbar" id="main-nav">
+  <div class="nav-inner">
+
+    <!-- Logo -->
+    <a href="/pages/index.html" class="nav-logo" id="nav-logo-link">
+      <img src="/assets/images/logo.png" alt="Vistru" class="nav-logo-img" id="nav-logo-img" style="display:none">
+      <span class="nav-logo-text">Vis<span>tru</span></span>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <div class="nav-links" id="nav-links">
+      <a href="/pages/index.html"              class="nav-link" data-i18n="nav_platform">Platform</a>
+      <a href="/pages/auth/login.html?role=client"   class="nav-link" data-i18n="nav_client">Client</a>
+      <a href="/pages/auth/login.html?role=engineer" class="nav-link" data-i18n="nav_engineer">Engineer</a>
+      <a href="/pages/auth/login.html?role=supplier" class="nav-link" data-i18n="nav_supplier">Supplier</a>
+      <a href="/pages/auth/login.html?role=lawyer"   class="nav-link" data-i18n="nav_legal">Legal</a>
+    </div>
+
+    <!-- Right Side -->
+    <div class="nav-right">
+
+      <!-- Language Switcher -->
+      <div class="lang-switcher" id="lang-switcher" onclick="toggleLangDropdown()">
+        <span id="lang-current">🇬🇧 English</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+          <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="lang-dropdown" id="lang-dropdown"></div>
+      </div>
+
+      <!-- Auth buttons (shown when logged out) -->
+      <div id="nav-auth-btns">
+        <a href="/pages/auth/login.html" class="btn btn-ghost btn-sm nav-login-btn" data-i18n="nav_login">Login</a>
+        <a href="/pages/auth/register.html" class="btn btn-primary btn-sm" data-i18n="nav_get_started">Get Started</a>
+      </div>
+
+      <!-- User menu (shown when logged in) -->
+      <div id="nav-user-menu" style="display:none" class="nav-user-menu">
+        <div class="nav-avatar" id="nav-avatar" onclick="toggleUserDropdown()">
+          <span id="nav-avatar-letter">?</span>
+        </div>
+        <div class="nav-user-dropdown" id="nav-user-dropdown">
+          <div class="nav-user-info">
+            <div id="nav-user-name" style="font-weight:600;font-size:0.875rem"></div>
+            <div id="nav-user-role" style="font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px"></div>
+          </div>
+          <hr style="border:none;border-top:1px solid var(--border);margin:8px 0">
+          <a id="nav-dashboard-link" href="#" class="nav-dropdown-item">📊 Dashboard</a>
+          <a class="nav-dropdown-item" onclick="handleLogout()">🚪 Logout</a>
+        </div>
+      </div>
+
+      <!-- Mobile menu toggle -->
+      <button class="nav-mobile-toggle" id="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+
+    </div>
+  </div>
+</nav>
+
+<style>
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(11,31,58,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(201,146,42,0.2);
+  height: var(--nav-height);
+}
+.nav-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 48px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo-img { height: 36px; width: auto; }
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.nav-logo-text span { color: var(--gold); }
+.nav-links { display:flex; align-items:center; gap:4px; }
+.nav-link {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--slate-light);
+  text-decoration: none;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+.nav-link.active { color: var(--gold); background: rgba(201,146,42,0.1); }
+.nav-right { display:flex; align-items:center; gap:10px; }
+#nav-auth-btns { display:flex; align-items:center; gap:8px; }
+.nav-login-btn { color: var(--slate-light) !important; }
+
+/* User menu */
+.nav-user-menu { position:relative; }
+.nav-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--navy-light));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem;
+  color: var(--white);
+  cursor: pointer;
+  border: 2px solid rgba(201,146,42,0.4);
+  transition: border-color 0.2s;
+}
+.nav-avatar:hover { border-color: var(--gold); }
+.nav-user-dropdown {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: var(--shadow-md);
+  min-width: 200px; padding: 8px;
+  display: none; animation: fadeDown 0.2s ease;
+}
+.nav-user-dropdown.open { display: block; }
+.nav-user-info { padding: 8px 10px 4px; }
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 10px; border-radius: 6px;
+  font-size: 0.82rem; color: var(--navy);
+  text-decoration: none; cursor: pointer;
+  transition: background 0.15s;
+}
+.nav-dropdown-item:hover { background: var(--cream); }
+
+/* Mobile toggle */
+.nav-mobile-toggle {
+  display: none;
+  flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 4px;
+}
+.nav-mobile-toggle span {
+  display: block; width: 22px; height: 2px;
+  background: var(--slate-light); border-radius: 2px;
+  transition: all 0.3s;
+}
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links.mobile-open {
+    display: flex; flex-direction: column;
+    position: fixed; top: var(--nav-height); left: 0; right: 0;
+    background: rgba(11,31,58,0.98);
+    padding: 16px 20px 24px;
+    border-bottom: 1px solid rgba(201,146,42,0.2);
+    animation: fadeDown 0.2s ease;
+  }
+  .nav-links.mobile-open .nav-link {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+}
+</style>
+
+<script>
+// ── Navbar JS ──
+
+// Build language dropdown
+function buildLangDropdown() {
+  if (typeof i18n === 'undefined') return;
+  const dropdown = document.getElementById('lang-dropdown');
+  if (!dropdown) return;
+  const langs = i18n.getLangs();
+  dropdown.innerHTML = Object.entries(langs).map(([code, lang]) => `
+    <div class="lang-option ${i18n.getCurrentLang() === code ? 'active' : ''}"
+         onclick="selectLang('${code}')">
+      ${lang.flag} ${lang.name}
+    </div>
+  `).join('');
+}
+
+function toggleLangDropdown() {
+  const d = document.getElementById('lang-dropdown');
+  if (d) { buildLangDropdown(); d.classList.toggle('open'); }
+}
+
+function selectLang(code) {
+  if (typeof i18n !== 'undefined') i18n.setLang(code);
+  document.getElementById('lang-dropdown').classList.remove('open');
+}
+
+function toggleUserDropdown() {
+  document.getElementById('nav-user-dropdown')?.classList.toggle('open');
+}
+
+function toggleMobileMenu() {
+  document.getElementById('nav-links')?.classList.toggle('mobile-open');
+}
+
+// ── Update nav based on auth state ──
+function updateNavAuth() {
+  const user = typeof VistruAPI !== 'undefined' ? VistruAPI.Auth.getUser() : null;
+  const authBtns = document.getElementById('nav-auth-btns');
+  const userMenu = document.getElementById('nav-user-menu');
+
+  if (user && VistruAPI.Auth.isLoggedIn()) {
+    if (authBtns) authBtns.style.display = 'none';
+    if (userMenu) userMenu.style.display = '';
+    const letter = document.getElementById('nav-avatar-letter');
+    const name   = document.getElementById('nav-user-name');
+    const role   = document.getElementById('nav-user-role');
+    const link   = document.getElementById('nav-dashboard-link');
+    if (letter) letter.textContent = (user.firstName || user.first_name || '?').charAt(0).toUpperCase();
+    if (name)   name.textContent   = `${user.firstName || user.first_name || ''} ${user.lastName || user.last_name || ''}`.trim();
+    if (role)   role.textContent   = { client:'Property Owner', engineer:'Civil Engineer', supplier:'Material Supplier', lawyer:'Platform Lawyer', admin:'Administrator' }[user.role] || user.role;
+    const dashMap = { client:'/pages/client/dashboard.html', engineer:'/pages/engineer/dashboard.html', supplier:'/pages/supplier/dashboard.html', lawyer:'/pages/lawyer/dashboard.html', admin:'/pages/admin/dashboard.html' };
+    if (link) link.href = dashMap[user.role] || '#';
+  } else {
+    if (authBtns) authBtns.style.display = '';
+    if (userMenu) userMenu.style.display = 'none';
+  }
+}
+
+async function handleLogout() {
+  if (typeof VistruAPI !== 'undefined') await VistruAPI.AuthAPI.logout();
+  else { localStorage.clear(); window.location.href = '/pages/index.html'; }
+}
+
+// ── Highlight active nav link ──
+function setActiveNavLink() {
+  const path = window.location.pathname;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') && path.includes(link.getAttribute('href').split('?')[0])) {
+      link.classList.add('active');
+    }
+  });
+  if (path.includes('index.html') || path === '/') {
+    document.querySelector('.nav-link[href*="index"]')?.classList.add('active');
+  }
+}
+
+// ── Load logo if available ──
+function loadLogo() {
+  const img = document.getElementById('nav-logo-img');
+  const txt = document.querySelector('.nav-logo-text');
+  if (img) {
+    img.onload = () => { img.style.display = ''; if(txt) txt.style.display = 'none'; };
+    img.onerror = () => { img.style.display = 'none'; if(txt) txt.style.display = ''; };
+  }
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#lang-switcher')) {
+    document.getElementById('lang-dropdown')?.classList.remove('open');
+  }
+  if (!e.target.closest('.nav-user-menu')) {
+    document.getElementById('nav-user-dropdown')?.classList.remove('open');
+  }
+  if (!e.target.closest('#mobile-toggle') && !e.target.closest('#nav-links')) {
+    document.getElementById('nav-links')?.classList.remove('mobile-open');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadLogo();
+  setActiveNavLink();
+  updateNavAuth();
+  buildLangDropdown();
+});
+</script>

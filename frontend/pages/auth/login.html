@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Vistru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/auth.css">
+</head>
+<body>
+
+<div class="auth-page">
+
+  <!-- ═══════════════════════════
+       LEFT — Branding Panel
+       ═══════════════════════════ -->
+  <div class="auth-left">
+    <div class="auth-left-bg"></div>
+    <div class="auth-left-grid"></div>
+
+    <div class="auth-left-content">
+      <a href="../index.html" class="auth-brand">Vis<span>tru</span></a>
+      <div class="auth-tagline">
+        Your project,<br><em>always in sight.</em>
+      </div>
+      <p class="auth-tagline-sub">
+        Log in to manage your construction project from land verification to final handover — with AI monitoring and escrow-protected payments.
+      </p>
+    </div>
+
+    <div class="auth-features">
+      <div class="auth-feature">
+        <div class="auth-feature-icon">🔒</div>
+        <div>
+          <div class="auth-feature-title">Escrow-Protected Payments</div>
+          <div class="auth-feature-sub">Funds held securely and released only on your confirmation</div>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">📹</div>
+        <div>
+          <div class="auth-feature-title">AI + CCTV Site Monitoring</div>
+          <div class="auth-feature-sub">Live feeds and AI reports delivered to your dashboard</div>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">⚖️</div>
+        <div>
+          <div class="auth-feature-title">Verified Legal Support</div>
+          <div class="auth-feature-sub">Land verification, contracts, and arbitration on-platform</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-testimonial">
+      <div class="auth-testimonial-text">
+        "Vistru gave me complete visibility over my building project in Abakaliki while I was in Lagos. Every milestone, every payment — all transparent."
+      </div>
+      <div class="auth-testimonial-author">
+        <div class="auth-testimonial-avatar">AO</div>
+        <div>
+          <div class="auth-testimonial-name">Adaeze Okonkwo</div>
+          <div class="auth-testimonial-role">Property Client · Ebonyi State</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       RIGHT — Login Form
+       ═══════════════════════════ -->
+  <div class="auth-right">
+    <div class="auth-right-inner">
+
+      <!-- Role indicator (shown when coming from a specific portal) -->
+      <div id="role-indicator" style="display:none;margin-bottom:20px">
+        <div class="badge badge-gold" id="role-badge"></div>
+      </div>
+
+      <!-- ── Main Login Form ── -->
+      <div id="panel-login">
+        <div class="auth-form-header">
+          <div class="auth-form-title">Welcome back</div>
+          <div class="auth-form-sub">Log in to your Vistru account to access your dashboard.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input class="form-input" id="login-email" type="email"
+                 placeholder="yourname@email.com"
+                 oninput="clearErr('login-email')"
+                 onkeydown="if(event.key==='Enter')doLogin()">
+          <div class="form-error" id="err-login-email">Please enter a valid email address.</div>
+        </div>
+
+        <div class="form-group">
+          <span class="forgot-link" onclick="showPanel('panel-forgot')">Forgot password?</span>
+          <label class="form-label">Password <span class="required">*</span></label>
+          <div style="position:relative">
+            <input class="form-input" id="login-password" type="password"
+                   placeholder="••••••••" style="padding-right:52px"
+                   oninput="clearErr('login-password')"
+                   onkeydown="if(event.key==='Enter')doLogin()">
+            <button onclick="togglePw('login-password',this)"
+                    style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--slate);font-size:0.78rem;font-weight:600">
+              Show
+            </button>
+          </div>
+          <div class="form-error" id="err-login-password">Password is required.</div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--slate);cursor:pointer">
+            <input type="checkbox" id="remember-me" style="accent-color:var(--gold)">
+            Remember me for 30 days
+          </label>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">
+          Login to Dashboard →
+        </button>
+
+        <!-- Pending review notice (hidden by default) -->
+        <div id="pending-notice" class="alert alert-gold" style="display:none;margin-top:16px">
+          ⏳ <strong>Account Under Review:</strong> Your credentials are being verified by our team. This typically takes 24–48 hours. We will email you once approved.
+        </div>
+
+        <div class="auth-form-footer">
+          Don't have an account?
+          <a href="register.html" id="register-link">Create one free</a>
+        </div>
+      </div>
+
+      <!-- ── Forgot Password Panel ── -->
+      <div id="panel-forgot" style="display:none">
+        <div class="auth-back" onclick="showPanel('panel-login')">← Back to login</div>
+        <div class="auth-form-header">
+          <div class="auth-form-title">Reset password</div>
+          <div class="auth-form-sub">Enter your email address and we'll send you a reset link.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input class="form-input" id="forgot-email" type="email" placeholder="yourname@email.com">
+        </div>
+        <button class="btn btn-primary btn-full" id="forgot-btn" onclick="doForgotPassword()">
+          Send Reset Link →
+        </button>
+        <div class="auth-form-footer">
+          Remembered it? <span class="link" onclick="showPanel('panel-login')">Back to login</span>
+        </div>
+      </div>
+
+      <!-- ── Reset Sent Confirmation ── -->
+      <div id="panel-reset-sent" style="display:none">
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:3rem;margin-bottom:16px">📧</div>
+          <div class="auth-form-title" style="margin-bottom:8px">Check your inbox</div>
+          <p style="font-size:0.875rem;color:var(--slate);line-height:1.7;margin-bottom:24px">
+            If an account exists for <strong id="reset-email-shown"></strong>, a password reset link has been sent. Check your inbox and spam folder.
+          </p>
+          <button class="btn btn-primary btn-full" onclick="showPanel('panel-login')">
+            Back to Login
+          </button>
+        </div>
+      </div>
+
+      <!-- ── OTP Verification (for unverified users) ── -->
+      <div id="panel-otp" style="display:none">
+        <div class="auth-back" onclick="showPanel('panel-login')">← Back to login</div>
+        <div class="otp-section">
+          <div class="otp-icon">📧</div>
+          <h3>Verify your email</h3>
+          <p>Your email hasn't been verified yet. We've sent a new code to<br>
+            <span class="otp-email-highlight" id="otp-panel-email"></span>
+          </p>
+          <div class="otp-row">
+            <input class="otp-box" id="v-otp-1" maxlength="1" oninput="otpMove(this,'v-otp-2')" onkeydown="otpBack(event,'',this)">
+            <input class="otp-box" id="v-otp-2" maxlength="1" oninput="otpMove(this,'v-otp-3')" onkeydown="otpBack(event,'v-otp-1',this)">
+            <input class="otp-box" id="v-otp-3" maxlength="1" oninput="otpMove(this,'v-otp-4')" onkeydown="otpBack(event,'v-otp-2',this)">
+            <input class="otp-box" id="v-otp-4" maxlength="1" oninput="otpMove(this,'v-otp-5')" onkeydown="otpBack(event,'v-otp-3',this)">
+            <input class="otp-box" id="v-otp-5" maxlength="1" oninput="otpMove(this,'v-otp-6')" onkeydown="otpBack(event,'v-otp-4',this)">
+            <input class="otp-box" id="v-otp-6" maxlength="1" oninput="otpMove(this,'')"        onkeydown="otpBack(event,'v-otp-5',this)">
+          </div>
+          <div class="form-error" id="err-v-otp" style="text-align:center"></div>
+          <button class="btn btn-primary btn-full" id="verify-btn" onclick="doVerifyFromLogin()" style="margin-top:8px">
+            Verify Email →
+          </button>
+          <div class="resend-row">
+            Didn't receive it?
+            <span class="resend-btn" id="resend-btn" onclick="doResendOTP()">Resend code</span>
+            <span id="resend-timer" style="display:none">Resend in <strong id="resend-count">60</strong>s</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end auth-right-inner -->
+
+    <!-- Bottom link to landing -->
+    <div style="text-align:center;padding:20px;border-top:1px solid var(--border)">
+      <a href="../index.html" style="font-size:0.78rem;color:var(--slate);text-decoration:none">
+        ← Back to Vistru Homepage
+      </a>
+    </div>
+  </div><!-- end auth-right -->
+
+</div><!-- end auth-page -->
+
+<script src="../../js/i18n.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/utils.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   LOGIN PAGE LOGIC
+   ═══════════════════════════════════════════════════════ */
+
+let _pendingUserId = null;
+let _resendInterval = null;
+
+// ── Panel switcher ──
+function showPanel(id) {
+  ['panel-login','panel-forgot','panel-reset-sent','panel-otp'].forEach(p => {
+    const el = document.getElementById(p);
+    if (el) el.style.display = p === id ? '' : 'none';
+  });
+}
+
+// ── Detect role from URL param ──
+document.addEventListener('DOMContentLoaded', () => {
+  const role = getParam('role');
+  const roleMap = {
+    client  : { label: '👤 Client Portal',   color: 'badge-blue' },
+    engineer: { label: '🏗️ Engineer Portal', color: 'badge-green' },
+    supplier: { label: '🏪 Supplier Portal', color: 'badge-amber' },
+    lawyer  : { label: '⚖️ Legal Portal',   color: 'badge-slate' }
+  };
+  if (role && roleMap[role]) {
+    const indicator = document.getElementById('role-indicator');
+    const badge     = document.getElementById('role-badge');
+    const regLink   = document.getElementById('register-link');
+    if (indicator) indicator.style.display = '';
+    if (badge) {
+      badge.textContent = roleMap[role].label;
+      badge.className   = `badge ${roleMap[role].color}`;
+    }
+    if (regLink) regLink.href = `register.html?role=${role}`;
+  }
+
+  // Redirect if already logged in
+  /* 
+  if (typeof VistruAPI !== 'undefined' && VistruAPI.Auth.isLoggedIn()) {
+    const user = VistruAPI.Auth.getUser();
+    if (user) redirectToDashboard(user.role);
+  }
+  */ 
+});
+
+// ── Login ──
+async function doLogin() {
+  clearAllErrors();
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  let ok = true;
+
+  if (!email || !isValidEmail(email)) { showErr('login-email'); ok = false; }
+  if (!password)                       { showErr('login-password'); ok = false; }
+  if (!ok) return;
+
+  setLoading('login-btn', true, 'Logging in...');
+
+  try {
+    const data = await VistruAPI.AuthAPI.login(email, password);
+    showToast(`Welcome back, ${data.user.firstName}! 🎉`, 'success');
+    setTimeout(() => redirectToDashboard(data.user.role), 800);
+  } catch (err) {
+    if (err.message && err.message.includes('pending_review')) {
+      document.getElementById('pending-notice').style.display = '';
+    } else if (err.message && err.message.includes('verify')) {
+      // Need OTP verification
+      _pendingUserId = err.userId || null;
+      document.getElementById('otp-panel-email').textContent = email;
+      showPanel('panel-otp');
+      startResendTimer();
+      if (_pendingUserId) {
+        try { await VistruAPI.AuthAPI.resendOTP(_pendingUserId); } catch(_) {}
+      }
+    } else {
+      showErr('login-email', ' ');
+      showErr('login-password', err.message || 'Incorrect email or password.');
+    }
+  } finally {
+    setLoading('login-btn', false);
+  }
+}
+
+// ── Redirect based on role ──
+function redirectToDashboard(role) {
+  const map = {
+    client  : '../client/dashboard.html',
+    engineer: '../engineer/dashboard.html',
+    supplier: '../supplier/dashboard.html',
+    lawyer  : '../lawyer/dashboard.html',
+    admin   : '../admin/dashboard.html'
+  };
+  // Check for redirect param
+  const redirect = getParam('redirect');
+  window.location.href = redirect || map[role] || '../index.html';
+}
+
+// ── Forgot Password ──
+async function doForgotPassword() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email || !isValidEmail(email)) {
+    showToast('Please enter a valid email address.', 'warning');
+    return;
+  }
+  setLoading('forgot-btn', true, 'Sending...');
+  try {
+    await VistruAPI.AuthAPI.forgotPassword(email);
+    document.getElementById('reset-email-shown').textContent = email;
+    showPanel('panel-reset-sent');
+  } catch (err) {
+    showToast(err.message || 'Could not send reset link. Try again.', 'error');
+  } finally {
+    setLoading('forgot-btn', false);
+  }
+}
+
+// ── Verify email from login page ──
+async function doVerifyFromLogin() {
+  const code = getOTPValue('v-otp');
+  if (code.length < 6) {
+    document.getElementById('err-v-otp').textContent = 'Please enter all 6 digits.';
+    document.getElementById('err-v-otp').classList.add('show');
+    return;
+  }
+  if (!_pendingUserId) {
+    showToast('Session expired. Please log in again.', 'error');
+    showPanel('panel-login'); return;
+  }
+  setLoading('verify-btn', true, 'Verifying...');
+  try {
+    const data = await VistruAPI.AuthAPI.verifyEmail(_pendingUserId, code);
+    showToast('Email verified! Welcome to Vistru 🎉', 'success');
+    setTimeout(() => redirectToDashboard(data.user.role), 800);
+  } catch (err) {
+    document.getElementById('err-v-otp').textContent = err.message || 'Incorrect code. Try again.';
+    document.getElementById('err-v-otp').classList.add('show');
+    shakeOTPBoxes('v-otp');
+  } finally {
+    setLoading('verify-btn', false);
+  }
+}
+
+// ── Resend OTP ──
+async function doResendOTP() {
+  if (!_pendingUserId) return;
+  try {
+    await VistruAPI.AuthAPI.resendOTP(_pendingUserId);
+    showToast('A new code has been sent to your email.', 'success');
+    startResendTimer();
+  } catch (err) {
+    showToast('Could not resend. Please try again.', 'error');
+  }
+}
+
+// ── Resend countdown timer ──
+function startResendTimer() {
+  let count = 60;
+  document.getElementById('resend-btn').style.display   = 'none';
+  document.getElementById('resend-timer').style.display = '';
+  clearInterval(_resendInterval);
+  _resendInterval = setInterval(() => {
+    count--;
+    document.getElementById('resend-count').textContent = count;
+    if (count <= 0) {
+      clearInterval(_resendInterval);
+      document.getElementById('resend-timer').style.display = 'none';
+      document.getElementById('resend-btn').style.display   = '';
+    }
+  }, 1000);
+}
+</script>
+</body>
+</html>

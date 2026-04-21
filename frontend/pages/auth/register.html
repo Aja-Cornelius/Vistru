@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — Vistru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/auth.css">
+</head>
+<body>
+
+<div class="auth-page">
+
+  <!-- ═══════════════════════════
+       LEFT — Branding Panel
+       ═══════════════════════════ -->
+  <div class="auth-left">
+    <div class="auth-left-bg"></div>
+    <div class="auth-left-grid"></div>
+    <div class="auth-left-content">
+      <a href="../index.html" class="auth-brand">Vis<span>tru</span></a>
+      <div class="auth-tagline">
+        Join Nigeria's<br><em>trusted platform</em><br>for construction.
+      </div>
+      <p class="auth-tagline-sub">
+        Whether you are a property owner, licensed engineer, material supplier, or legal professional — Vistru has a dedicated portal for your workflow.
+      </p>
+    </div>
+    <div class="auth-features">
+      <div class="auth-feature">
+        <div class="auth-feature-icon">✅</div>
+        <div>
+          <div class="auth-feature-title">Fully Verified Platform</div>
+          <div class="auth-feature-sub">Every engineer, supplier, and lawyer is verified before activation</div>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">🛡️</div>
+        <div>
+          <div class="auth-feature-title">Secure Identity Verification</div>
+          <div class="auth-feature-sub">NIN, BVN, passport and business registration checks</div>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">💰</div>
+        <div>
+          <div class="auth-feature-title">Escrow-Protected Earnings</div>
+          <div class="auth-feature-sub">Engineers and suppliers receive payment only after confirmed delivery</div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-testimonial">
+      <div class="auth-testimonial-text">
+        "As an engineer, Vistru gave me a professional platform to showcase my work and win projects fairly. The project loan feature kept my team paid during construction."
+      </div>
+      <div class="auth-testimonial-author">
+        <div class="auth-testimonial-avatar">CE</div>
+        <div>
+          <div class="auth-testimonial-name">Engr. Chidi Eze</div>
+          <div class="auth-testimonial-role">Civil Engineer · COREN Registered</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       RIGHT — Registration Form
+       ═══════════════════════════ -->
+  <div class="auth-right">
+    <div class="auth-right-inner">
+
+      <!-- ── PANEL 0: Role Selection ── -->
+      <div id="panel-role">
+        <div class="auth-form-header">
+          <div class="auth-form-title">Create your account</div>
+          <div class="auth-form-sub">Select the role that best describes you to get started.</div>
+        </div>
+        <div class="role-selector">
+          <div class="role-option" id="role-opt-client" onclick="selectRole('client')">
+            <div class="role-opt-icon">👤</div>
+            <div class="role-opt-name">Client</div>
+            <div class="role-opt-desc">I want to build a property</div>
+          </div>
+          <div class="role-option" id="role-opt-engineer" onclick="selectRole('engineer')">
+            <div class="role-opt-icon">🏗️</div>
+            <div class="role-opt-name">Engineer</div>
+            <div class="role-opt-desc">I am a licensed civil engineer</div>
+          </div>
+          <div class="role-option" id="role-opt-supplier" onclick="selectRole('supplier')">
+            <div class="role-opt-icon">🏪</div>
+            <div class="role-opt-name">Supplier</div>
+            <div class="role-opt-desc">I supply building materials</div>
+          </div>
+        </div>
+        <div class="alert alert-blue" style="font-size:0.82rem">
+          ⚖️ <strong>Platform Lawyers</strong> are onboarded directly by Vistru. Contact <a href="mailto:lawyers@vistru.ng" style="color:var(--navy-light);font-weight:600">lawyers@vistru.ng</a> to apply.
+        </div>
+        <button class="btn btn-primary btn-full" id="role-continue-btn" onclick="goToStep(1)" disabled style="opacity:0.5">
+          Continue →
+        </button>
+        <div class="auth-form-footer">
+          Already have an account? <a href="login.html">Login here</a>
+        </div>
+      </div>
+
+      <!-- ── REGISTRATION STEPS (shared container) ── -->
+      <div id="panel-register" style="display:none">
+
+        <!-- Step progress bar -->
+        <div class="auth-steps">
+          <div class="auth-step-bar">
+            <div class="step-progress" id="step-progress-bar"></div>
+          </div>
+          <div class="auth-step-info">
+            <span class="current-step" id="step-label-current"></span>
+            <span id="step-label-count"></span>
+          </div>
+        </div>
+
+        <!-- Step panels injected here dynamically -->
+        <div id="step-content"></div>
+
+        <!-- Navigation buttons -->
+        <div style="display:flex;gap:10px;margin-top:4px" id="step-nav">
+          <button class="btn btn-ghost btn-sm" id="btn-back" onclick="goToStep(currentStep - 1)" style="flex:0 0 auto;padding:11px 20px;display:none">← Back</button>
+          <button class="btn btn-primary btn-full" id="btn-next" onclick="handleNext()">Continue →</button>
+        </div>
+
+      </div>
+
+      <!-- ── SUCCESS / OTP PANEL ── -->
+      <div id="panel-otp" style="display:none">
+        <div class="otp-section">
+          <div class="otp-icon">📧</div>
+          <h3>Verify your email</h3>
+          <p>We've sent a 6-digit verification code to<br>
+            <span class="otp-email-highlight" id="otp-email-display"></span>
+          </p>
+          <div class="otp-pending-note" id="otp-pending-note" style="display:none">
+            🕐 Your account will be <strong>pending review</strong> until our team verifies your submitted documents. This typically takes <strong>24–48 hours.</strong> You will receive an email once approved.
+          </div>
+          <div class="otp-row">
+            <input class="otp-box" id="otp-1" maxlength="1" oninput="otpMove(this,'otp-2')" onkeydown="otpBack(event,'',this)">
+            <input class="otp-box" id="otp-2" maxlength="1" oninput="otpMove(this,'otp-3')" onkeydown="otpBack(event,'otp-1',this)">
+            <input class="otp-box" id="otp-3" maxlength="1" oninput="otpMove(this,'otp-4')" onkeydown="otpBack(event,'otp-2',this)">
+            <input class="otp-box" id="otp-4" maxlength="1" oninput="otpMove(this,'otp-5')" onkeydown="otpBack(event,'otp-3',this)">
+            <input class="otp-box" id="otp-5" maxlength="1" oninput="otpMove(this,'otp-6')" onkeydown="otpBack(event,'otp-4',this)">
+            <input class="otp-box" id="otp-6" maxlength="1" oninput="otpMove(this,'')"      onkeydown="otpBack(event,'otp-5',this)">
+          </div>
+          <div class="form-error" id="err-otp" style="text-align:center;margin-bottom:8px"></div>
+          <button class="btn btn-primary btn-full" id="otp-verify-btn" onclick="doVerifyOTP()">
+            Verify & Activate Account →
+          </button>
+          <div class="resend-row" style="margin-top:12px">
+            Didn't receive it?
+            <span class="resend-btn" id="otp-resend-btn" onclick="doResendOTP()">Resend code</span>
+            <span id="otp-resend-timer" style="display:none">Resend in <strong id="otp-resend-count">60</strong>s</span>
+          </div>
+          <div style="text-align:center;margin-top:12px">
+            <span class="auth-back" style="font-size:0.78rem" onclick="showMainPanel('panel-register')">← Edit my details</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end auth-right-inner -->
+    <div style="text-align:center;padding:20px;border-top:1px solid var(--border)">
+      <a href="../index.html" style="font-size:0.78rem;color:var(--slate);text-decoration:none">← Back to Vistru Homepage</a>
+    </div>
+  </div><!-- end auth-right -->
+
+</div><!-- end auth-page -->
+
+<script src="../../js/i18n.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/utils.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   REGISTRATION PAGE LOGIC
+   ═══════════════════════════════════════════════════════════ */
+
+let selectedRole   = null;
+let currentStep    = 0;
+let totalSteps     = 0;
+let registeredUserId = null;
+let resendInterval = null;
+
+// ── Step definitions per role ──
+const STEPS = {
+  client: [
+    { label: 'Personal Info',   id: 'personal' },
+    { label: 'Identity',        id: 'identity' },
+    { label: 'Security',        id: 'security' }
+  ],
+  engineer: [
+    { label: 'Personal Info',   id: 'personal' },
+    { label: 'Licence',         id: 'licence' },
+    { label: 'Experience',      id: 'experience' },
+    { label: 'Security',        id: 'security' }
+  ],
+  supplier: [
+    { label: 'Owner Info',      id: 'personal' },
+    { label: 'Business',        id: 'business' },
+    { label: 'Inventory',       id: 'inventory' },
+    { label: 'Banking',         id: 'banking' }
+  ]
+};
+
+// Shared form data store
+const formData = {};
+const uploadedFiles = {};
+
+// ── Role selection ──
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll('.role-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`role-opt-${role}`).classList.add('selected');
+  const btn = document.getElementById('role-continue-btn');
+  btn.disabled = false; btn.style.opacity = '1';
+}
+
+// ── Show/hide main panels ──
+function showMainPanel(id) {
+  ['panel-role','panel-register','panel-otp'].forEach(p => {
+    const el = document.getElementById(p);
+    if (el) el.style.display = p === id ? '' : 'none';
+  });
+}
+
+// ── Build step progress bar ──
+function buildProgressBar(step) {
+  const steps = STEPS[selectedRole];
+  const bar   = document.getElementById('step-progress-bar');
+  if (!bar) return;
+  bar.innerHTML = steps.map((s, i) => `
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="step-dot ${i < step ? 'done' : i === step ? 'active' : ''}">${i < step ? '✓' : i + 1}</div>
+      <div class="step-label">${s.label}</div>
+    </div>
+    ${i < steps.length - 1 ? `<div class="step-line ${i < step ? 'done' : ''}"></div>` : ''}
+  `).join('');
+  document.getElementById('step-label-current').textContent = steps[step]?.label || '';
+  document.getElementById('step-label-count').textContent   = `Step ${step + 1} of ${steps.length}`;
+}
+
+// ── Navigate to step ──
+function goToStep(step) {
+  const steps = STEPS[selectedRole];
+  if (!steps) return;
+  if (step < 0) { showMainPanel('panel-role'); return; }
+  if (step >= steps.length) { submitRegistration(); return; }
+
+  currentStep = step;
+  totalSteps  = steps.length;
+
+  showMainPanel('panel-register');
+  buildProgressBar(step);
+  renderStep(steps[step].id);
+
+  // Back button visibility
+  const backBtn = document.getElementById('btn-back');
+  if (backBtn) backBtn.style.display = step > 0 ? '' : 'none';
+
+  // Next button label
+  const nextBtn = document.getElementById('btn-next');
+  if (nextBtn) nextBtn.textContent = step === steps.length - 1
+    ? (selectedRole === 'supplier' ? 'Submit & Verify Email →' : 'Create Account →')
+    : 'Continue →';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Render step content ──
+function renderStep(stepId) {
+  const container = document.getElementById('step-content');
+  const role = selectedRole;
+
+  const steps = {
+    // ─── PERSONAL (all roles) ───
+    personal: `
+      <div class="form-section-title">Personal Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name <span class="required">*</span></label>
+          <input class="form-input" id="f-firstname" type="text" placeholder="e.g. Adaeze" value="${formData.firstName||''}" oninput="save('firstName',this.value);clearErr('f-firstname')">
+          <div class="form-error" id="err-f-firstname">First name is required.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name <span class="required">*</span></label>
+          <input class="form-input" id="f-lastname" type="text" placeholder="e.g. Okonkwo" value="${formData.lastName||''}" oninput="save('lastName',this.value);clearErr('f-lastname')">
+          <div class="form-error" id="err-f-lastname">Last name is required.</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address <span class="required">*</span></label>
+        <input class="form-input" id="f-email" type="email" placeholder="yourname@email.com" value="${formData.email||''}" oninput="save('email',this.value);clearErr('f-email')">
+        <div class="form-error" id="err-f-email">Enter a valid email address.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number <span class="required">*</span></label>
+        <div class="form-row-3">
+          <select class="form-select" id="f-dialcode" onchange="save('dialCode',this.value)">
+            <option value="+234" ${formData.dialCode==='+234'?'selected':''}>🇳🇬 +234</option>
+            <option value="+233" ${formData.dialCode==='+233'?'selected':''}>🇬🇭 +233</option>
+            <option value="+254" ${formData.dialCode==='+254'?'selected':''}>🇰🇪 +254</option>
+            <option value="+44"  ${formData.dialCode==='+44' ?'selected':''}>🇬🇧 +44</option>
+            <option value="+1"   ${formData.dialCode==='+1'  ?'selected':''}>🇺🇸 +1</option>
+          </select>
+          <input class="form-input" id="f-phone" type="tel" placeholder="080XXXXXXXX" value="${formData.phone||''}" oninput="save('phone',this.value);clearErr('f-phone')">
+        </div>
+        <div class="form-error" id="err-f-phone">Enter a valid phone number.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nationality <span class="required">*</span></label>
+          <select class="form-select" id="f-nationality" onchange="save('nationality',this.value);clearErr('f-nationality')">
+            <option value="">Select nationality</option>
+            <option ${formData.nationality==='Nigerian'?'selected':''}>Nigerian</option>
+            <option ${formData.nationality==='Ghanaian'?'selected':''}>Ghanaian</option>
+            <option ${formData.nationality==='Kenyan'?'selected':''}>Kenyan</option>
+            <option ${formData.nationality==='British'?'selected':''}>British</option>
+            <option ${formData.nationality==='American'?'selected':''}>American</option>
+            <option ${formData.nationality==='Other'?'selected':''}>Other</option>
+          </select>
+          <div class="form-error" id="err-f-nationality">Please select your nationality.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Birth <span class="required">*</span></label>
+          <input class="form-input" id="f-dob" type="date" value="${formData.dateOfBirth||''}" oninput="save('dateOfBirth',this.value);clearErr('f-dob')">
+          <div class="form-error" id="err-f-dob">You must be at least 18 years old.</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Residential Address <span class="required">*</span></label>
+        <input class="form-input" id="f-address" type="text" placeholder="e.g. No. 5 GRA, Abakaliki, Ebonyi State" value="${formData.residentialAddress||''}" oninput="save('residentialAddress',this.value);clearErr('f-address')">
+        <div class="form-error" id="err-f-address">Address is required.</div>
+      </div>
+    `,
+
+    // ─── IDENTITY ───
+    identity: `
+      <div class="form-section-title">Identity Verification</div>
+      <div style="background:#F5F8FC;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:0.82rem;color:var(--slate);line-height:1.6">
+        🛡️ Vistru verifies all users. Your information is encrypted and never shared with third parties.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Means of Identification <span class="required">*</span></label>
+        <select class="form-select" id="f-idtype" onchange="save('idType',this.value);updateIdPlaceholder();clearErr('f-idtype')">
+          <option value="">Select ID type</option>
+          <option value="nin"     ${formData.idType==='nin'    ?'selected':''}>National Identification Number (NIN)</option>
+          <option value="bvn"     ${formData.idType==='bvn'    ?'selected':''}>Bank Verification Number (BVN)</option>
+          <option value="passport"${formData.idType==='passport'?'selected':''}>International Passport</option>
+          <option value="drivers" ${formData.idType==='drivers' ?'selected':''}>Driver's Licence</option>
+          <option value="voters"  ${formData.idType==='voters'  ?'selected':''}>Permanent Voter's Card (PVC)</option>
+        </select>
+        <div class="form-error" id="err-f-idtype">Please select an ID type.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="id-number-label">ID Number <span class="required">*</span></label>
+        <input class="form-input" id="f-idnumber" type="text" placeholder="Enter your ID number" value="${formData.idNumber||''}" oninput="save('idNumber',this.value);clearErr('f-idnumber')">
+        <div class="form-error" id="err-f-idnumber">ID number is required.</div>
+      </div>
+      <div class="form-group" id="id-expiry-row" style="display:none">
+        <label class="form-label">Expiry Date</label>
+        <input class="form-input" id="f-idexpiry" type="date" value="${formData.idExpiry||''}" oninput="save('idExpiry',this.value)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload ID Document <span class="required">*</span></label>
+        <div class="id-upload-zone" onclick="document.getElementById('file-id-doc').click()">
+          <div style="font-size:1.8rem;margin-bottom:6px">🪪</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--navy);margin-bottom:2px">Click to upload front of ID</div>
+          <div style="font-size:0.75rem;color:var(--slate)">JPG, PNG or PDF · Max 5MB</div>
+        </div>
+        <input type="file" id="file-id-doc" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleFile(this,'id_document','prev-id-doc','prev-id-doc-name','f-iddoc')">
+        <div class="id-preview" id="prev-id-doc"><span>📋</span><div style="flex:1"><div id="prev-id-doc-name" style="font-size:0.82rem;font-weight:600"></div><div style="font-size:0.72rem;color:var(--slate)">Ready to upload</div></div><span class="badge badge-green">✓</span></div>
+        <div class="form-error" id="err-f-iddoc">Please upload your ID document.</div>
+      </div>
+      <div class="form-group" id="selfie-row" ${role!=='client'?'style="display:none"':''}>
+        <label class="form-label">Selfie with ID <span class="required">*</span></label>
+        <div class="id-upload-zone" onclick="document.getElementById('file-selfie').click()">
+          <div style="font-size:1.8rem;margin-bottom:6px">🤳</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--navy);margin-bottom:2px">Upload a clear selfie holding your ID</div>
+          <div style="font-size:0.75rem;color:var(--slate)">Face and ID must be clearly visible</div>
+        </div>
+        <input type="file" id="file-selfie" accept=".jpg,.jpeg,.png" style="display:none" onchange="handleFile(this,'selfie','prev-selfie','prev-selfie-name','f-selfie')">
+        <div class="id-preview" id="prev-selfie"><span>📸</span><div style="flex:1"><div id="prev-selfie-name" style="font-size:0.82rem;font-weight:600"></div><div style="font-size:0.72rem;color:var(--slate)">Ready to upload</div></div><span class="badge badge-green">✓</span></div>
+        <div class="form-error" id="err-f-selfie">Please upload a selfie with your ID.</div>
+      </div>
+    `,
+
+    // ─── SECURITY (all roles) ───
+    security: `
+      <div class="form-section-title">Password & Security</div>
+      <div class="form-group">
+        <label class="form-label">Create Password <span class="required">*</span></label>
+        <div style="position:relative">
+          <input class="form-input" id="f-password" type="password" placeholder="Min. 8 characters" style="padding-right:52px" oninput="save('password',this.value);checkPwStrength(this.value,'pw-bar-','pw-hint');clearErr('f-password')">
+          <button onclick="togglePw('f-password',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--slate);font-size:0.78rem;font-weight:600">Show</button>
+        </div>
+        <div class="pw-strength"><div class="pw-bar" id="pw-bar-1"></div><div class="pw-bar" id="pw-bar-2"></div><div class="pw-bar" id="pw-bar-3"></div><div class="pw-bar" id="pw-bar-4"></div></div>
+        <div class="pw-hint" id="pw-hint">Use 8+ characters, uppercase, numbers and symbols</div>
+        <div class="form-error" id="err-f-password">Password must be at least 8 characters.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password <span class="required">*</span></label>
+        <div style="position:relative">
+          <input class="form-input" id="f-confirm" type="password" placeholder="Re-enter password" style="padding-right:52px" oninput="clearErr('f-confirm')">
+          <button onclick="togglePw('f-confirm',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--slate);font-size:0.78rem;font-weight:600">Show</button>
+        </div>
+        <div class="form-error" id="err-f-confirm">Passwords do not match.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Security Question <span class="required">*</span></label>
+        <select class="form-select" id="f-secq" style="margin-bottom:8px" onchange="save('securityQuestion',this.value);clearErr('f-secq')">
+          <option value="">Select a question</option>
+          <option>What is the name of the street you grew up on?</option>
+          <option>What is your mother's maiden name?</option>
+          <option>What was the name of your first pet?</option>
+          <option>What city were you born in?</option>
+          <option>What was the make of your first car?</option>
+        </select>
+        <input class="form-input" id="f-seca" type="text" placeholder="Your answer" oninput="save('securityAnswer',this.value);clearErr('f-secq')">
+        <div class="form-error" id="err-f-secq">Please select a question and provide an answer.</div>
+      </div>
+      <div class="terms-group">
+        <label class="terms-label">
+          <input type="checkbox" id="f-terms" onchange="clearErr('f-terms')">
+          I have read and agree to Vistru's <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>. I confirm that all information submitted is accurate and complete.
+        </label>
+        <div class="form-error" id="err-f-terms">You must accept the terms to continue.</div>
+      </div>
+    `,
+
+    // ─── LICENCE (engineer only) ───
+    licence: `
+      <div class="form-section-title">Engineering Licence</div>
+      <div class="alert alert-gold" style="font-size:0.82rem">⚠️ Only COREN/NSE licensed engineers are accepted. Your licence is verified before account activation.</div>
+      <div class="form-group">
+        <label class="form-label">Licensing Body <span class="required">*</span></label>
+        <select class="form-select" id="f-licbody" onchange="save('licenceBody',this.value);clearErr('f-licbody')">
+          <option value="">Select licensing body</option>
+          <option value="coren" ${formData.licenceBody==='coren'?'selected':''}>COREN — Council for the Regulation of Engineering in Nigeria</option>
+          <option value="nse"   ${formData.licenceBody==='nse'  ?'selected':''}>NSE — Nigerian Society of Engineers</option>
+          <option value="mnse"  ${formData.licenceBody==='mnse' ?'selected':''}>MNSE — Member, Nigerian Society of Engineers</option>
+          <option value="other" ${formData.licenceBody==='other'?'selected':''}>Other Recognised Body</option>
+        </select>
+        <div class="form-error" id="err-f-licbody">Please select your licensing body.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Licence Number <span class="required">*</span></label>
+          <input class="form-input" id="f-licno" type="text" placeholder="e.g. CR/2020/12345" value="${formData.licenceNumber||''}" oninput="save('licenceNumber',this.value);clearErr('f-licno')">
+          <div class="form-error" id="err-f-licno">Licence number is required.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expiry Date <span class="required">*</span></label>
+          <input class="form-input" id="f-licexpiry" type="date" value="${formData.licenceExpiry||''}" oninput="save('licenceExpiry',this.value);clearErr('f-licexpiry')">
+          <div class="form-error" id="err-f-licexpiry">Expiry date is required.</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Licence Certificate <span class="required">*</span></label>
+        <div class="id-upload-zone" onclick="document.getElementById('file-lic').click()">
+          <div style="font-size:1.8rem;margin-bottom:6px">📋</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--navy);margin-bottom:2px">Upload your engineering licence</div>
+          <div style="font-size:0.75rem;color:var(--slate)">PDF, JPG or PNG · Max 5MB</div>
+        </div>
+        <input type="file" id="file-lic" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this,'licence_doc','prev-lic','prev-lic-name','f-lic')">
+        <div class="id-preview" id="prev-lic"><span>📋</span><div style="flex:1"><div id="prev-lic-name" style="font-size:0.82rem;font-weight:600"></div></div><span class="badge badge-green">✓</span></div>
+        <div class="form-error" id="err-f-lic">Please upload your licence certificate.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Government ID <span class="required">*</span></label>
+        <div class="id-upload-zone" onclick="document.getElementById('file-engid').click()">
+          <div style="font-size:1.8rem;margin-bottom:6px">🪪</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--navy);margin-bottom:2px">Upload front of your ID document</div>
+          <div style="font-size:0.75rem;color:var(--slate)">PDF, JPG or PNG · Max 5MB</div>
+        </div>
+        <input type="file" id="file-engid" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this,'id_document','prev-engid','prev-engid-name','f-engid')">
+        <div class="id-preview" id="prev-engid"><span>🪪</span><div style="flex:1"><div id="prev-engid-name" style="font-size:0.82rem;font-weight:600"></div></div><span class="badge badge-green">✓</span></div>
+        <div class="form-error" id="err-f-engid">Please upload your government ID.</div>
+      </div>
+    `,
+
+    // ─── EXPERIENCE (engineer only) ───
+    experience: `
+      <div class="form-section-title">Specialisation & Experience</div>
+      <div class="form-group">
+        <label class="form-label">Engineering Discipline <span class="required">*</span></label>
+        <select class="form-select" id="f-discipline" onchange="save('discipline',this.value);clearErr('f-discipline')">
+          <option value="">Select primary discipline</option>
+          <option value="civil"        ${formData.discipline==='civil'        ?'selected':''}>Civil Engineering</option>
+          <option value="structural"   ${formData.discipline==='structural'   ?'selected':''}>Structural Engineering</option>
+          <option value="building"     ${formData.discipline==='building'     ?'selected':''}>Building / Construction Engineering</option>
+          <option value="geotechnical" ${formData.discipline==='geotechnical' ?'selected':''}>Geotechnical Engineering</option>
+          <option value="mep"          ${formData.discipline==='mep'          ?'selected':''}>Mechanical, Electrical & Plumbing (MEP)</option>
+          <option value="quantity"     ${formData.discipline==='quantity'     ?'selected':''}>Quantity Surveying</option>
+        </select>
+        <div class="form-error" id="err-f-discipline">Please select your discipline.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project Specialisations <span class="required">*</span></label>
+        <div class="check-grid" id="spec-grid">
+          ${['residential','commercial','industrial','roads','renovation','highrise'].map(s => `
+            <label class="check-card" onclick="toggleCard(this)">
+              <input type="checkbox" value="${s}" ${(formData.specialisations||[]).includes(s)?'checked':''}> ${{residential:'🏠 Residential',commercial:'🏢 Commercial',industrial:'🏭 Industrial',roads:'🛣️ Roads',renovation:'🔨 Renovation',highrise:'🏙️ High-Rise'}[s]}
+            </label>
+          `).join('')}
+        </div>
+        <div class="form-error" id="err-f-spec">Select at least one specialisation.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Years of Experience <span class="required">*</span></label>
+          <select class="form-select" id="f-experience" onchange="save('yearsExperience',this.value);clearErr('f-experience')">
+            <option value="">Select experience</option>
+            <option value="1-3"  ${formData.yearsExperience==='1-3' ?'selected':''}>1 – 3 years</option>
+            <option value="4-6"  ${formData.yearsExperience==='4-6' ?'selected':''}>4 – 6 years</option>
+            <option value="7-10" ${formData.yearsExperience==='7-10'?'selected':''}>7 – 10 years</option>
+            <option value="11-15"${formData.yearsExperience==='11-15'?'selected':''}>11 – 15 years</option>
+            <option value="15+"  ${formData.yearsExperience==='15+' ?'selected':''}>15+ years</option>
+          </select>
+          <div class="form-error" id="err-f-experience">Please select your experience.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Highest Qualification <span class="required">*</span></label>
+          <select class="form-select" id="f-qualification" onchange="save('highestQualification',this.value);clearErr('f-qualification')">
+            <option value="">Select qualification</option>
+            <option value="beng" ${formData.highestQualification==='beng'?'selected':''}>B.Eng / B.Tech</option>
+            <option value="hnd"  ${formData.highestQualification==='hnd' ?'selected':''}>HND (Engineering)</option>
+            <option value="meng" ${formData.highestQualification==='meng'?'selected':''}>M.Eng / M.Sc</option>
+            <option value="phd"  ${formData.highestQualification==='phd' ?'selected':''}>Ph.D</option>
+          </select>
+          <div class="form-error" id="err-f-qualification">Please select your qualification.</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Primary Operating State <span class="required">*</span></label>
+        <select class="form-select" id="f-state" onchange="save('primaryState',this.value);clearErr('f-state')">
+          <option value="">Select state</option>
+          ${['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT — Abuja','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara'].map(s=>`<option ${formData.primaryState===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <div class="form-error" id="err-f-state">Please select your operating state.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Professional Bio</label>
+        <textarea class="form-input" id="f-bio" rows="3" placeholder="Brief description of your experience and specialisation (shown to clients)..." oninput="save('bio',this.value)">${formData.bio||''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Academic Certificate <span class="required">*</span></label>
+        <div class="id-upload-zone" onclick="document.getElementById('file-cert').click()">
+          <div style="font-size:1.8rem;margin-bottom:6px">🎓</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--navy);margin-bottom:2px">Upload your highest academic certificate</div>
+          <div style="font-size:0.75rem;color:var(--slate)">PDF, JPG or PNG · Max 5MB</div>
+        </div>
+        <input type="file" id="file-cert" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this,'academic_cert','prev-cert','prev-cert-name','f-cert')">
+        <div class="id-preview" id="prev-cert"><span>🎓</span><div style="flex:1"><div id="prev-cert-name" style="font-size:0.82rem;font-weight:600"></div></div><span class="badge badge-green">✓</span></div>
+        <div class="form-error" id="err-f-cert">Please upload your certificate.</div>
+      </div>
+    `,
+
+    // ─── BUSINESS (supplier only) ───
+    business: `
+      <div class="form-section-title">Business Registration</div>
+      <div class="alert alert-gold" style="font-size:0.82rem">⚠️ All suppliers must be CAC-registered businesses. Your registration will be verified before clients can order from you.</div>
+      <div class="form-group">
+        <label class="form-label">Business / Store Name <span class="required">*</span></label>
+        <input class="form-input" id="f-bizname" type="text" placeholder="e.g. Bamike Steel & Hardware Ltd" value="${formData.businessName||''}" oninput="save('businessName',this.value);clearErr('f-bizname')">
+        <div class="form-error" id="err-f-bizname">Business name is required.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Business Type <span class="required">*</span></label>
+        <select class="form-select" id="f-biztype" onchange="save('businessType',this.value);clearErr('f-biztype')">
+          <option value="">Select business type</option>
+          <option value="sole"       ${formData.businessType==='sole'       ?'selected':''}>Sole Proprietorship</option>
+          <option value="partnership"${formData.businessType==='partnership'?'selected':''}>Partnership</option>
+          <option value="ltd"        ${formData.businessType==='ltd'        ?'selected':''}>Private Limited Company (Ltd)</option>
+          <option value="enterprise" ${formData.businessType==='enterprise' ?'selected':''}>Business Name / Enterprise</option>
+        </select>
+        <div class="form-error" id="err-f-biztype">Please select your business type.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">CAC Registration Number <span class="required">*</span></label>
+        <input class="form-input" id="f-cacno" type="text" placeholder="e.g. BN-1234567 or RC-1234567" value="${formData.cacNumber||''}" oninput="save('cacNumber',this.value);clearErr('f-cacno')">
+        <div class="form-error" id="err-f-cacno">CAC registration number is required.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload CAC Certificate <span class="required">*</span></label>
+        <div class="id-upload-zone" onclick="document.getElementById('file-cac').click()">
+          <div style="font-size:1.8rem;margin-bottom:6px">📜</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--navy);margin-bottom:2px">Upload your CAC certificate of registration</div>
+          <div style="font-size:0.75rem;color:var(--slate)">PDF, JPG or PNG · Max 5MB</div>
+        </div>
+        <input type="file" id="file-cac" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this,'cac_doc','prev-cac','prev-cac-name','f-cac')">
+        <div class="id-preview" id="prev-cac"><span>📜</span><div style="flex:1"><div id="prev-cac-name" style="font-size:0.82rem;font-weight:600"></div></div><span class="badge badge-green">✓</span></div>
+        <div class="form-error" id="err-f-cac">Please upload your CAC certificate.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Store / Warehouse Address <span class="required">*</span></label>
+        <input class="form-input" id="f-storeaddr" type="text" placeholder="e.g. No. 14 Mile 50 Market, Abakaliki" value="${formData.storeAddress||''}" oninput="save('storeAddress',this.value);clearErr('f-storeaddr')">
+        <div class="form-error" id="err-f-storeaddr">Store address is required.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">State <span class="required">*</span></label>
+          <select class="form-select" id="f-supstate" onchange="save('state',this.value);clearErr('f-supstate')">
+            <option value="">Select state</option>
+            ${['Abia','Anambra','Cross River','Delta','Ebonyi','Edo','Enugu','FCT — Abuja','Imo','Lagos','Rivers'].map(s=>`<option ${formData.state===s?'selected':''}>${s}</option>`).join('')}
+            <option>Other</option>
+          </select>
+          <div class="form-error" id="err-f-supstate">Please select your state.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">LGA <span class="required">*</span></label>
+          <input class="form-input" id="f-lga" type="text" placeholder="e.g. Abakaliki LGA" value="${formData.lga||''}" oninput="save('lga',this.value);clearErr('f-lga')">
+          <div class="form-error" id="err-f-lga">LGA is required.</div>
+        </div>
+      </div>
+    `,
+
+    // ─── INVENTORY (supplier only) ───
+    inventory: `
+      <div class="form-section-title">Materials & Delivery</div>
+      <div class="form-group">
+        <label class="form-label">Material Categories <span class="required">*</span></label>
+        <div class="check-grid" id="cat-grid">
+          ${[['iron','🔩 Iron Rods & Steel'],['cement','🧱 Cement & Binders'],['aggregates','🪨 Sand & Aggregates'],['roofing','🏠 Roofing Materials'],['timber','🪵 Timber & Wood'],['blocks','🧱 Blocks & Pavers'],['electrical','⚡ Electrical Fittings'],['plumbing','🚿 Plumbing Materials'],['tiles','🪟 Tiles & Finishes'],['general','🏗️ General Hardware']].map(([v,l])=>`
+            <label class="check-card" onclick="toggleCard(this)">
+              <input type="checkbox" value="${v}" ${(formData.materialCategories||[]).includes(v)?'checked':''}> ${l}
+            </label>
+          `).join('')}
+        </div>
+        <div class="form-error" id="err-f-cats">Select at least one category.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Delivery Coverage Area <span class="required">*</span></label>
+        <input class="form-input" id="f-coverage" type="text" placeholder="e.g. Ebonyi State, Enugu State · Within 150km radius" value="${formData.coverageArea||''}" oninput="save('coverageArea',this.value);clearErr('f-coverage')">
+        <div class="form-error" id="err-f-coverage">Please describe your delivery coverage area.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Typical Turnaround <span class="required">*</span></label>
+          <select class="form-select" id="f-turnaround" onchange="save('deliveryTurnaround',this.value);clearErr('f-turnaround')">
+            <option value="">Select turnaround</option>
+            <option value="same" ${formData.deliveryTurnaround==='same'?'selected':''}>Same day (within 8hrs)</option>
+            <option value="24"   ${formData.deliveryTurnaround==='24'  ?'selected':''}>Within 24 hours</option>
+            <option value="48"   ${formData.deliveryTurnaround==='48'  ?'selected':''}>Within 48 hours</option>
+            <option value="72"   ${formData.deliveryTurnaround==='72'  ?'selected':''}>Within 72 hours</option>
+            <option value="custom"${formData.deliveryTurnaround==='custom'?'selected':''}>Custom / Negotiable</option>
+          </select>
+          <div class="form-error" id="err-f-turnaround">Please select a turnaround time.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Minimum Order (₦)</label>
+          <input class="form-input" id="f-minorder" type="number" placeholder="e.g. 50000 (optional)" value="${formData.minimumOrder||''}" oninput="save('minimumOrder',this.value)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Do you own delivery vehicles? <span class="required">*</span></label>
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.85rem;flex:1;justify-content:center">
+            <input type="radio" name="f-hasvehicles" value="true" ${formData.hasOwnVehicles==='true'?'checked':''} style="accent-color:var(--gold)" onchange="save('hasOwnVehicles',this.value);document.getElementById('vehicle-count-row').style.display=''"> Yes — own vehicles
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.85rem;flex:1;justify-content:center">
+            <input type="radio" name="f-hasvehicles" value="false" ${formData.hasOwnVehicles==='false'?'checked':''} style="accent-color:var(--gold)" onchange="save('hasOwnVehicles',this.value);document.getElementById('vehicle-count-row').style.display='none'"> No — 3rd party
+          </label>
+        </div>
+        <div class="form-error" id="err-f-vehicles">Please select a delivery option.</div>
+      </div>
+      <div id="vehicle-count-row" style="display:${formData.hasOwnVehicles==='true'?'':'none'}" class="form-group">
+        <label class="form-label">Number of Delivery Vehicles</label>
+        <input class="form-input" id="f-vehiclecount" type="number" min="1" placeholder="e.g. 3" value="${formData.vehicleCount||''}" oninput="save('vehicleCount',this.value)">
+      </div>
+    `,
+
+    // ─── BANKING (supplier only) ───
+    banking: `
+      <div class="form-section-title">Bank Account & Security</div>
+      <div style="background:#F5F8FC;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:0.82rem;color:var(--slate);line-height:1.6">
+        🏦 Escrow payments are released directly to this account after delivery confirmation. Ensure details match exactly.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bank Name <span class="required">*</span></label>
+        <select class="form-select" id="f-bank" onchange="save('bankName',this.value);clearErr('f-bank')">
+          <option value="">Select your bank</option>
+          ${['Access Bank','Fidelity Bank','First Bank of Nigeria','FCMB','GTBank','Heritage Bank','Keystone Bank','Polaris Bank','Stanbic IBTC','Sterling Bank','Union Bank','UBA','Wema Bank','Zenith Bank','Kuda Bank','Opay','Moniepoint','Other'].map(b=>`<option ${formData.bankName===b?'selected':''}>${b}</option>`).join('')}
+        </select>
+        <div class="form-error" id="err-f-bank">Please select your bank.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Account Number <span class="required">*</span></label>
+          <input class="form-input" id="f-acctno" type="text" maxlength="10" placeholder="10-digit NUBAN" value="${formData.accountNumber||''}" oninput="save('accountNumber',this.value);verifyAccount(this);clearErr('f-acctno')">
+          <div class="acct-verify-status" id="acct-status"></div>
+          <div class="form-error" id="err-f-acctno">Enter a valid 10-digit account number.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Name</label>
+          <input class="form-input" id="f-acctname" type="text" placeholder="Auto-filled" readonly style="background:#F5F8FC;color:var(--slate)" value="${formData.accountName||''}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account Type <span class="required">*</span></label>
+        <div style="display:flex;gap:10px">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.85rem;flex:1;justify-content:center">
+            <input type="radio" name="f-accttype" value="business" ${formData.accountType==='business'?'checked':''} style="accent-color:var(--gold)" onchange="save('accountType',this.value)"> Business
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.85rem;flex:1;justify-content:center">
+            <input type="radio" name="f-accttype" value="personal" ${formData.accountType==='personal'?'checked':''} style="accent-color:var(--gold)" onchange="save('accountType',this.value)"> Personal
+          </label>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+      <div class="form-group">
+        <label class="form-label">Create Password <span class="required">*</span></label>
+        <div style="position:relative">
+          <input class="form-input" id="f-password" type="password" placeholder="Min. 8 characters" style="padding-right:52px" oninput="save('password',this.value);checkPwStrength(this.value,'pw-bar-','pw-hint');clearErr('f-password')">
+          <button onclick="togglePw('f-password',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--slate);font-size:0.78rem;font-weight:600">Show</button>
+        </div>
+        <div class="pw-strength"><div class="pw-bar" id="pw-bar-1"></div><div class="pw-bar" id="pw-bar-2"></div><div class="pw-bar" id="pw-bar-3"></div><div class="pw-bar" id="pw-bar-4"></div></div>
+        <div class="pw-hint" id="pw-hint">Use 8+ characters, uppercase, numbers and symbols</div>
+        <div class="form-error" id="err-f-password">Password must be at least 8 characters.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password <span class="required">*</span></label>
+        <div style="position:relative">
+          <input class="form-input" id="f-confirm" type="password" placeholder="Re-enter password" style="padding-right:52px" oninput="clearErr('f-confirm')">
+          <button onclick="togglePw('f-confirm',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--slate);font-size:0.78rem;font-weight:600">Show</button>
+        </div>
+        <div class="form-error" id="err-f-confirm">Passwords do not match.</div>
+      </div>
+      <div class="terms-group">
+        <label class="terms-label">
+          <input type="checkbox" id="f-terms" onchange="clearErr('f-terms')">
+          I confirm all business details are accurate and I have authority to register this business. I agree to Vistru's <a href="#" target="_blank">Supplier Terms</a>, delivery obligations, and escrow conditions.
+        </label>
+        <div class="form-error" id="err-f-terms">You must accept the terms to continue.</div>
+      </div>
+    `
+  };
+
+  container.innerHTML = steps[stepId] || '<p>Step not found.</p>';
+  setDOBMax('f-dob');
+}
+
+// ── Save field to formData ──
+function save(key, value) { formData[key] = value; }
+
+// ── Handle file upload ──
+function handleFile(input, fieldName, prevId, nameId, errId) {
+  if (!input.files.length) return;
+  const file = input.files[0];
+  uploadedFiles[fieldName] = file;
+  const nameEl = document.getElementById(nameId);
+  const prevEl = document.getElementById(prevId);
+  if (nameEl) nameEl.textContent = file.name;
+  if (prevEl) prevEl.style.display = 'flex';
+  clearErr(errId);
+}
+
+// ── ID type placeholder ──
+function updateIdPlaceholder() {
+  const t = document.getElementById('f-idtype')?.value;
+  const map = { nin:'11-digit NIN', bvn:'11-digit BVN', passport:'Passport number (e.g. A01234567)', drivers:'Driver licence number', voters:'PVC VIN number' };
+  const inp = document.getElementById('f-idnumber');
+  if (inp && t) inp.placeholder = map[t] || 'Enter your ID number';
+  const exp = document.getElementById('id-expiry-row');
+  if (exp) exp.style.display = (t === 'passport' || t === 'drivers') ? '' : 'none';
+}
+
+// ── Account verification simulation ──
+let acctTimer = null;
+function verifyAccount(input) {
+  const num = input.value.replace(/\D/g,'');
+  input.value = num;
+  const statusEl = document.getElementById('acct-status');
+  const nameEl   = document.getElementById('f-acctname');
+  clearTimeout(acctTimer);
+  if (num.length !== 10) { if (statusEl) statusEl.textContent = ''; if (nameEl) nameEl.value = ''; return; }
+  if (statusEl) { statusEl.textContent = '🔍 Verifying...'; statusEl.className = 'acct-verify-status'; }
+  acctTimer = setTimeout(() => {
+    const mockNames = ['BAMIKE STEEL & HARDWARE LTD','ADEYEMI BAMIKE OLUWASEUN','BAMIKE ENTERPRISES NIG'];
+    const name = mockNames[Math.floor(Math.random() * mockNames.length)];
+    if (nameEl) nameEl.value = name;
+    save('accountName', name);
+    if (statusEl) { statusEl.textContent = '✅ Account verified: ' + name; statusEl.className = 'acct-verify-status ok'; }
+    clearErr('f-acctno');
+  }, 1500);
+}
+
+// ── Handle Next / Continue button ──
+function handleNext() {
+  if (validateCurrentStep()) {
+    collectCurrentStepData();
+    goToStep(currentStep + 1);
+  }
+}
+
+// ── Collect data from current step ──
+function collectCurrentStepData() {
+  const stepId = STEPS[selectedRole][currentStep]?.id;
+
+  // Specialisations (engineer)
+  if (stepId === 'experience') {
+    const specs = Array.from(document.querySelectorAll('#spec-grid input:checked')).map(cb => cb.value);
+    formData.specialisations = specs;
+  }
+  // Material categories (supplier)
+  if (stepId === 'inventory') {
+    const cats = Array.from(document.querySelectorAll('#cat-grid input:checked')).map(cb => cb.value);
+    formData.materialCategories = cats;
+  }
+  // Security step password
+  if (stepId === 'security' || stepId === 'banking') {
+    formData.password = document.getElementById('f-password')?.value || '';
+  }
+}
+
+// ── Validate current step ──
+function validateCurrentStep() {
+  const stepId = STEPS[selectedRole][currentStep]?.id;
+  let ok = true;
+
+  const req = (id, errId, msg) => {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) { showErr(errId || id, msg); ok = false; }
+  };
+  const reqFile = (fieldName, errId, msg) => {
+    if (!uploadedFiles[fieldName]) { showErr(errId, msg); ok = false; }
+  };
+
+  clearAllErrors();
+
+  if (stepId === 'personal') {
+    req('f-firstname',   'f-firstname');
+    req('f-lastname',    'f-lastname');
+    const em = document.getElementById('f-email')?.value.trim();
+    if (!em || !isValidEmail(em)) { showErr('f-email'); ok = false; }
+    req('f-phone',       'f-phone');
+    req('f-nationality', 'f-nationality');
+    req('f-address',     'f-address');
+    const dob = document.getElementById('f-dob')?.value;
+    if (!dob || !isAtLeast18(dob)) { showErr('f-dob', 'You must be at least 18 years old.'); ok = false; }
+  }
+
+  if (stepId === 'identity') {
+    req('f-idtype',   'f-idtype');
+    req('f-idnumber', 'f-idnumber');
+    reqFile('id_document', 'f-iddoc', 'Please upload your ID document.');
+    if (selectedRole === 'client') reqFile('selfie', 'f-selfie', 'Please upload a selfie with your ID.');
+  }
+
+  if (stepId === 'security') {
+    const pw   = document.getElementById('f-password')?.value || '';
+    const conf = document.getElementById('f-confirm')?.value || '';
+    if (pw.length < 8)  { showErr('f-password', 'Password must be at least 8 characters.'); ok = false; }
+    if (pw !== conf)    { showErr('f-confirm', 'Passwords do not match.'); ok = false; }
+    req('f-secq', 'f-secq');
+    if (!document.getElementById('f-seca')?.value.trim()) { showErr('f-secq', 'Please provide an answer.'); ok = false; }
+    if (!document.getElementById('f-terms')?.checked)     { showErr('f-terms', 'You must accept the terms.'); ok = false; }
+  }
+
+  if (stepId === 'licence') {
+    req('f-licbody',   'f-licbody');
+    req('f-licno',     'f-licno');
+    const exp = document.getElementById('f-licexpiry')?.value;
+    if (!exp) { showErr('f-licexpiry', 'Expiry date is required.'); ok = false; }
+    else if (new Date(exp) < new Date()) { showErr('f-licexpiry', 'Licence appears expired. Please renew first.'); ok = false; }
+    reqFile('licence_doc', 'f-lic', 'Please upload your licence certificate.');
+    reqFile('id_document', 'f-engid', 'Please upload your government ID.');
+  }
+
+  if (stepId === 'experience') {
+    req('f-discipline',   'f-discipline');
+    req('f-experience',   'f-experience');
+    req('f-qualification','f-qualification');
+    req('f-state',        'f-state');
+    const specs = document.querySelectorAll('#spec-grid input:checked');
+    if (specs.length === 0) { showErr('f-spec', 'Select at least one specialisation.'); ok = false; }
+    reqFile('academic_cert', 'f-cert', 'Please upload your academic certificate.');
+  }
+
+  if (stepId === 'business') {
+    req('f-bizname',  'f-bizname');
+    req('f-biztype',  'f-biztype');
+    req('f-cacno',    'f-cacno');
+    req('f-storeaddr','f-storeaddr');
+    req('f-supstate', 'f-supstate');
+    req('f-lga',      'f-lga');
+    reqFile('cac_doc', 'f-cac', 'Please upload your CAC certificate.');
+  }
+
+  if (stepId === 'inventory') {
+    const cats = document.querySelectorAll('#cat-grid input:checked');
+    if (cats.length === 0) { showErr('f-cats', 'Select at least one material category.'); ok = false; }
+    req('f-coverage',  'f-coverage');
+    req('f-turnaround','f-turnaround');
+    const hasDel = document.querySelector('input[name="f-hasvehicles"]:checked');
+    if (!hasDel) { showErr('f-vehicles', 'Please select a delivery option.'); ok = false; }
+  }
+
+  if (stepId === 'banking') {
+    req('f-bank',   'f-bank');
+    const acct = document.getElementById('f-acctno')?.value || '';
+    if (acct.length !== 10 || !/^\d+$/.test(acct)) { showErr('f-acctno', 'Enter a valid 10-digit account number.'); ok = false; }
+    const pw   = document.getElementById('f-password')?.value || '';
+    const conf = document.getElementById('f-confirm')?.value  || '';
+    if (pw.length < 8) { showErr('f-password', 'Password must be at least 8 characters.'); ok = false; }
+    if (pw !== conf)   { showErr('f-confirm', 'Passwords do not match.'); ok = false; }
+    if (!document.getElementById('f-terms')?.checked) { showErr('f-terms', 'You must accept the terms.'); ok = false; }
+  }
+
+  return ok;
+}
+
+// ── Submit registration to backend ──
+async function submitRegistration() {
+  const btn = document.getElementById('btn-next');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Creating account...'; }
+
+  try {
+    const fd = new FormData();
+
+    // Append all form fields
+    Object.entries(formData).forEach(([key, val]) => {
+      if (Array.isArray(val)) val.forEach(v => fd.append(key + '[]', v));
+      else if (val !== undefined && val !== null) fd.append(key, val);
+    });
+
+    // Append files
+    Object.entries(uploadedFiles).forEach(([key, file]) => { if (file) fd.append(key, file); });
+
+    let data;
+    if (selectedRole === 'client')   data = await VistruAPI.AuthAPI.registerClient(fd);
+    if (selectedRole === 'engineer') data = await VistruAPI.AuthAPI.registerEngineer(fd);
+    if (selectedRole === 'supplier') data = await VistruAPI.AuthAPI.registerSupplier(fd);
+
+    registeredUserId = data.userId;
+
+    // Show OTP panel
+    document.getElementById('otp-email-display').textContent = formData.email;
+    const pendingNote = document.getElementById('otp-pending-note');
+    if (pendingNote) pendingNote.style.display = selectedRole !== 'client' ? '' : 'none';
+    showMainPanel('panel-otp');
+    startOTPTimer();
+
+  } catch (err) {
+    showToast(err.message || 'Registration failed. Please try again.', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = selectedRole === 'supplier' ? 'Submit & Verify Email →' : 'Create Account →'; }
+  }
+}
+
+// ── OTP Verification ──
+async function doVerifyOTP() {
+  const code = getOTPValue('otp');
+  const errEl = document.getElementById('err-otp');
+
+  if (code.length < 6) {
+    errEl.textContent = 'Please enter all 6 digits.';
+    errEl.classList.add('show');
+    return;
+  }
+  if (!registeredUserId) {
+    showToast('Session error. Please register again.', 'error'); return;
+  }
+
+  setLoading('otp-verify-btn', true, 'Verifying...');
+  try {
+    const data = await VistruAPI.AuthAPI.verifyEmail(registeredUserId, code);
+    showToast('Account created! Welcome to Vistru 🎉', 'success');
+    setTimeout(() => {
+      const map = {
+        client  : '../client/dashboard.html',
+        engineer: '../engineer/dashboard.html',
+        supplier: '../supplier/dashboard.html'
+      };
+      window.location.href = map[selectedRole] || '../index.html';
+    }, 800);
+  } catch (err) {
+    errEl.textContent = err.message || 'Incorrect code. Please try again.';
+    errEl.classList.add('show');
+    shakeOTPBoxes('otp');
+    setLoading('otp-verify-btn', false);
+  }
+}
+
+// ── Resend OTP ──
+async function doResendOTP() {
+  if (!registeredUserId) return;
+  try {
+    await VistruAPI.AuthAPI.resendOTP(registeredUserId);
+    showToast('A new verification code has been sent.', 'success');
+    startOTPTimer();
+  } catch (err) {
+    showToast('Could not resend code. Please try again.', 'error');
+  }
+}
+
+let otpTimerInterval = null;
+function startOTPTimer() {
+  let count = 60;
+  document.getElementById('otp-resend-btn').style.display   = 'none';
+  document.getElementById('otp-resend-timer').style.display = '';
+  clearInterval(otpTimerInterval);
+  otpTimerInterval = setInterval(() => {
+    count--;
+    document.getElementById('otp-resend-count').textContent = count;
+    if (count <= 0) {
+      clearInterval(otpTimerInterval);
+      document.getElementById('otp-resend-timer').style.display = 'none';
+      document.getElementById('otp-resend-btn').style.display   = '';
+    }
+  }, 1000);
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Check URL param for pre-selected role
+  const role = getParam('role');
+  if (role && ['client','engineer','supplier'].includes(role)) {
+    selectRole(role);
+    goToStep(0);
+  }
+
+  // Redirect if already logged in
+  /* 
+  if (typeof VistruAPI !== 'undefined' && VistruAPI.Auth.isLoggedIn()) {
+    const user = VistruAPI.Auth.getUser();
+    if (user) window.location.href = `../${user.role}/dashboard.html`;
+  }
+  */ 
+});
+</script>
+</body>
+</html>

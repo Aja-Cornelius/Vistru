@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Vistru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/dashboard.css">
+</head>
+<body>
+
+<div class="page-loader" id="page-loader">
+  <div class="logo">Vis<span>tru</span></div>
+</div>
+
+<div id="navbar-container"></div>
+
+<div class="dashboard-page">
+  <div class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">A</div>
+          <div>
+            <div class="sidebar-name">Platform Admin</div>
+            <div class="sidebar-role">Vistru Management</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Management</div>
+        <a class="sidebar-item active" onclick="showPanel('overview',this)">
+          <span class="s-icon">📊</span> Overview
+        </a>
+        <a class="sidebar-item" onclick="showPanel('reviews',this)">
+          <span class="s-icon">👤</span> Pending Reviews
+          <span class="sidebar-badge red" id="review-badge" style="display:none">!</span>
+        </a>
+        <a class="sidebar-item" onclick="showPanel('arbitrations',this)">
+          <span class="s-icon">⚖️</span> Arbitrations
+        </a>
+        <a class="sidebar-item" onclick="showPanel('audit',this)">
+          <span class="s-icon">📝</span> Audit Logs
+        </a>
+
+        <div class="sidebar-section-label">Settings</div>
+        <a class="sidebar-item" onclick="showPanel('profile',this)">
+          <span class="s-icon">👤</span> My Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" onclick="handleLogout()">
+          <span class="s-icon">🚪</span> Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- OVERVIEW -->
+      <div class="content-panel active" id="panel-overview">
+        <div class="page-header">
+          <div class="page-title">Platform Statistics</div>
+          <div class="page-sub">Real-time health of the Vistru ecosystem</div>
+        </div>
+
+        <div class="metric-row" id="admin-metrics">
+          <!-- Populated by JS -->
+          <div class="metric-card gold skeleton" style="height:120px"></div>
+          <div class="metric-card blue skeleton" style="height:120px"></div>
+          <div class="metric-card green skeleton" style="height:120px"></div>
+          <div class="metric-card amber skeleton" style="height:120px"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">User Distribution</div></div>
+            <div class="card-body" id="user-dist-list">
+              <!-- JS -->
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Project Health</div></div>
+            <div class="card-body" id="project-health-list">
+              <!-- JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENDING REVIEWS -->
+      <div class="content-panel" id="panel-reviews">
+        <div class="page-header">
+          <div class="page-title">Identity & Licence Reviews</div>
+          <div class="page-sub">Verify engineer and supplier credentials before activation</div>
+        </div>
+        <div id="reviews-content">
+          <div class="empty-state">
+            <div class="empty-icon">📂</div>
+            <h4>Loading pending reviews...</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARBITRATIONS -->
+      <div class="content-panel" id="panel-arbitrations">
+        <div class="page-header">
+          <div class="page-title">Active Disputes</div>
+          <div class="page-sub">Monitor and assign lawyers to arbitration cases</div>
+        </div>
+        <div id="arbitrations-content">
+          <!-- JS -->
+        </div>
+      </div>
+
+      <!-- AUDIT LOGS -->
+      <div class="content-panel" id="panel-audit">
+        <div class="page-header">
+          <div class="page-title">System Audit Log</div>
+          <div class="page-sub">Traceable history of all platform actions</div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <table class="audit-table">
+              <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Entity</th><th>Details</th></tr></thead>
+              <tbody id="audit-log-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<style>
+.audit-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.audit-table th { background: #F5F8FC; text-align: left; padding: 12px 16px; color: var(--slate); font-weight: 600; }
+.audit-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.review-card { display: flex; flex-direction: column; gap: 12px; padding: 20px; background: white; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; }
+.review-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.review-details { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+.review-label { font-size: 0.72rem; color: var(--slate); text-transform: uppercase; font-weight: 600; margin-bottom: 2px; }
+.review-val { font-size: 0.9rem; font-weight: 600; color: var(--navy); }
+.review-actions { display: flex; gap: 12px; margin-top: 12px; }
+.doc-link { color: var(--gold); text-decoration: none; font-weight: 600; }
+.doc-link:hover { text-decoration: underline; }
+</style>
+
+<script src="../../js/api.js"></script>
+<script src="../../js/utils.js"></script>
+<script>
+let stats = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth('admin')) return;
+
+  // Navbar
+  fetch('../../components/navbar.html')
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById('navbar-container').innerHTML = html;
+      updateNavAuth?.();
+    });
+
+  // Hide loader
+  setTimeout(() => { document.getElementById('page-loader')?.remove(); }, 600);
+
+  loadAdminData();
+});
+
+async function loadAdminData() {
+  try {
+    const [statsData, pendingData] = await Promise.all([
+      VistruAPI.AdminAPI.getStats(),
+      VistruAPI.AdminAPI.getPendingReviews()
+    ]);
+
+    stats = statsData;
+    renderStats();
+    renderPending(pendingData.pending);
+    
+    // Auto-load other panels if switched
+    loadArbitrations();
+    loadAuditLogs();
+
+  } catch (err) {
+    showToast('Failed to load admin data.', 'error');
+  }
+}
+
+function renderStats() {
+  const users = stats.users || [];
+  const totalUsers = users.reduce((acc, u) => acc + parseInt(u.count), 0);
+  const activeUsers = users.filter(u => u.status === 'active').reduce((acc, u) => acc + parseInt(u.count), 0);
+  
+  const escrow = stats.escrow || [];
+  const totalEscrow = escrow.reduce((acc, e) => acc + (parseInt(e.total) || 0), 0);
+
+  document.getElementById('admin-metrics').innerHTML = `
+    <div class="metric-card gold">
+      <div class="metric-label">Total Users</div>
+      <div class="metric-value">${totalUsers}</div>
+      <div class="metric-sub">${activeUsers} Active · ${totalUsers - activeUsers} Pending</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Funds in Escrow</div>
+      <div class="metric-value">${formatNaira(totalEscrow)}</div>
+      <div class="metric-sub">Across all active projects</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Total Projects</div>
+      <div class="metric-value">${stats.projects?.reduce((acc,p)=>acc+parseInt(p.count),0) || 0}</div>
+      <div class="metric-sub">In various stages</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Avg. Trust Rating</div>
+      <div class="metric-value">4.82</div>
+      <div class="metric-sub">Across all verified providers</div>
+    </div>
+  `;
+
+  // Distribution lists
+  document.getElementById('user-dist-list').innerHTML = users.map(u => `
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+      <span style="text-transform:capitalize">${u.role} (${u.status})</span>
+      <span style="font-weight:600">${u.count}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('project-health-list').innerHTML = (stats.projects || []).map(p => `
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+      <span style="text-transform:capitalize">${p.status.replace(/_/g,' ')}</span>
+      <span style="font-weight:600">${p.count}</span>
+    </div>
+  `).join('');
+}
+
+function renderPending(pending) {
+  const container = document.getElementById('reviews-content');
+  const badge = document.getElementById('review-badge');
+  
+  if (pending.length > 0) {
+    badge.textContent = pending.length;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+
+  if (!pending.length) {
+    container.innerHTML = '<div class="empty-state"><h4>No pending reviews</h4><p>All engineers and suppliers are up to date.</p></div>';
+    return;
+  }
+
+  container.innerHTML = pending.map(u => `
+    <div class="review-card">
+      <div class="review-header">
+        <div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--navy)">${u.first_name} ${u.last_name}</div>
+          <div style="font-size:0.8rem;color:var(--slate)">${u.email} · Registered ${formatDate(u.created_at)}</div>
+        </div>
+        <span class="badge ${u.role === 'engineer' ? 'badge-blue' : 'badge-gold'}">${u.role.toUpperCase()}</span>
+      </div>
+      <div class="review-details">
+        <div><div class="review-label">ID Document</div><a href="${u.id_document_url}" target="_blank" class="doc-link">View NIN/Voters/Passport</a></div>
+        ${u.role === 'engineer' ? `
+          <div><div class="review-label">Licence Number</div><div class="review-val">${u.licence_number} (${u.licence_body})</div></div>
+          <div><div class="review-label">Licence Document</div><a href="${u.licence_doc_url}" target="_blank" class="doc-link">View Licence PDF</a></div>
+          <div><div class="review-label">Expiry</div><div class="review-val">${u.licence_expiry}</div></div>
+        ` : `
+          <div><div class="review-label">Business Name</div><div class="review-val">${u.business_name}</div></div>
+          <div><div class="review-label">CAC Number</div><div class="review-val">${u.cac_number}</div></div>
+          <div><div class="review-label">CAC Document</div><a href="${u.cac_doc_url}" target="_blank" class="doc-link">View CAC Cert</a></div>
+        `}
+      </div>
+      <div class="review-actions">
+        <button class="btn btn-green btn-sm" onclick="approveUser('${u.id}')">✅ Approve Access</button>
+        <button class="btn btn-ghost btn-sm" onclick="rejectUser('${u.id}')">❌ Reject</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function approveUser(id) {
+  if (!confirm('Approve this user for full platform access?')) return;
+  try {
+    await VistruAPI.AdminAPI.approveUser(id);
+    showToast('User approved successfully.', 'success');
+    loadAdminData();
+  } catch (err) {
+    showToast('Approval failed.', 'error');
+  }
+}
+
+async function loadArbitrations() {
+  try {
+    const data = await VistruAPI.AdminAPI.getArbitrations();
+    const cases = data.cases || [];
+    document.getElementById('arbitrations-content').innerHTML = cases.length ? cases.map(c => `
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <div style="font-weight:700">${c.case_reference}</div>
+            <span class="badge badge-amber">${c.status.replace(/_/g,' ')}</span>
+          </div>
+          <div style="font-size:0.9rem;margin-bottom:12px">${c.description}</div>
+          <div style="font-size:0.82rem;color:var(--slate);margin-bottom:12px">
+            Project: ${c.project_title} · Site: ${c.site_state} <br>
+            Filed by: ${c.filed_by_name} · Disputed Amount: ${formatNaira(c.disputed_amount)}
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            ${c.lawyer_id ? `<span style="font-size:0.8rem">Assigned Lawyer: <strong>${c.lawyer_name}</strong></span>` 
+                          : `<button class="btn btn-navy btn-sm" onclick="assignLawyer('${c.id}')">Assign Lawyer</button>`}
+          </div>
+        </div>
+      </div>
+    `).join('') : '<div class="empty-state"><h4>No active disputes</h4></div>';
+  } catch (err) {}
+}
+
+async function loadAuditLogs() {
+  try {
+    const data = await VistruAPI.AdminAPI.getAuditLog();
+    const log = data.log || [];
+    document.getElementById('audit-log-body').innerHTML = log.map(l => `
+      <tr>
+        <td>${formatDate(l.created_at)}</td>
+        <td><strong>${l.actor_name}</strong><br><small>${l.actor_role}</small></td>
+        <td>${l.action}</td>
+        <td>${l.entity}</td>
+        <td><small>${JSON.stringify(l.new_value || l.old_value || {}).substring(0,60)}...</small></td>
+      </tr>
+    `).join('');
+  } catch (err) {}
+}
+
+function showPanel(id, el) {
+  document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+async function handleLogout() {
+  await VistruAPI.AuthAPI.logout();
+}
+
+const formatDate = (d) => new Date(d).toLocaleDateString('en-NG', { day:'2-digit', month:'short', year:'numeric' });
+</script>
+</body>
+</html>
