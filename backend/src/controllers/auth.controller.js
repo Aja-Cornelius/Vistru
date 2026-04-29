@@ -338,10 +338,19 @@ const resendOTP = async (req, res) => {
       [otpHash, expires, userId]
     );
 
-    await emailSvc.sendOTP({ to: user.email, name: user.first_name, otp, purpose: 'verification' });
+    // Send OTP email (non-blocking)
+    emailSvc.sendOTP({ 
+      to: user.email, 
+      name: user.first_name, 
+      otp, 
+      purpose: 'verification' 
+    }).catch(err => {
+      console.error('Email delivery failed in resendOTP:', err.message);
+    });
 
     res.json({ message: 'A new verification code has been sent to your email.' });
   } catch (err) {
+    console.error('resendOTP main error:', err);
     res.status(500).json({ error: 'Could not resend code. Please try again.' });
   }
 };
