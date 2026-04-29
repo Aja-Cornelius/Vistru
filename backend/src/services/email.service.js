@@ -5,16 +5,15 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  host   : process.env.SMTP_HOST,
-  port   : parseInt(process.env.SMTP_PORT) || 587,
-  secure : false,
-  auth   : {
-    user : process.env.SMTP_USER,
-    pass : process.env.SMTP_PASS
+  service : 'gmail',
+  auth    : {
+    user  : process.env.SMTP_USER,
+    pass  : process.env.SMTP_PASS
   }
 });
 
-const FROM = `"${process.env.EMAIL_FROM_NAME || 'Vistru'}" <${process.env.EMAIL_FROM}>`;
+// Gmail often requires the FROM address to match the SMTP_USER
+const FROM = `"${process.env.EMAIL_FROM_NAME || 'Vistru'}" <${process.env.SMTP_USER}>`;
 
 // ── Shared HTML wrapper ──
 const wrap = (content) => `
