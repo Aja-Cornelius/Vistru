@@ -7,7 +7,9 @@
 //  Include this in every dashboard page.
 // ═══════════════════════════════════════════════════════════
 
-const API_BASE = 'http://127.0.0.1:5000/api';  // change to production URL when deployed
+const API_BASE = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
+  ? 'http://127.0.0.1:5000/api' 
+  : 'https://vistru-backend.onrender.com/api'; // Replace with real backend URL after deployment
 
 // ── Token management ──
 const Auth = {
