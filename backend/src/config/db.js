@@ -14,13 +14,19 @@ const poolConfig = process.env.DATABASE_URL
       password : process.env.DB_PASSWORD || '',
     };
 
+// Mask password for safer logging
+const safeUrl = process.env.DATABASE_URL 
+  ? process.env.DATABASE_URL.replace(/:([^@]+)@/, ':****@') 
+  : `${poolConfig.user}@${poolConfig.host}`;
+
+console.log(`📡 Attempting DB connection to: ${safeUrl}`);
+
 const pool = new Pool({
   ...poolConfig,
-  max      : 20,
+  max      : 10, // Reduced for free tier compatibility
   idleTimeoutMillis : 30000,
-  connectionTimeoutMillis : 60000, // 60 seconds for serverless wake-up
-  keepAlive: true,
-  ssl      : (process.env.NODE_ENV === 'production' || process.env.DATABASE_URL?.includes('neon.tech'))
+  connectionTimeoutMillis : 10000, 
+  ssl      : (process.env.NODE_ENV === 'production' || process.env.DATABASE_URL?.includes('neon.tech') || process.env.DATABASE_URL?.includes('supabase.co'))
              ? { rejectUnauthorized: false }
              : false
 });
