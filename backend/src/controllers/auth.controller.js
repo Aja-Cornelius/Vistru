@@ -64,28 +64,20 @@ const registerClient = async (req, res) => {
         (role, status, first_name, last_name, email, phone, password_hash,
          nationality, date_of_birth, residential_address, id_type, id_number,
          id_document_url, selfie_url, security_question, security_answer,
-         email_otp, email_otp_expires)
+         email_verified)
       VALUES
-        ('client','pending_email',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+        ('client','active',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,TRUE)
       RETURNING id, email, first_name, last_name, role, status
     `, [
       firstName, lastName, email.toLowerCase(), phone, passwordHash,
       nationality, dateOfBirth, residentialAddress, idType, idNumber,
-      idDocUrl, selfieUrl, securityQuestion, answerHash, otpHash, otpExpires
+      idDocUrl, selfieUrl, securityQuestion, answerHash
     ]);
 
     await client.query('COMMIT');
 
-    // Send OTP email (non-blocking)
-    emailSvc.sendOTP({
-      to      : email,
-      name    : firstName,
-      otp,
-      purpose : 'verification'
-    }).catch(console.error);
-
     res.status(201).json({
-      message : 'Registration successful. Please check your email for the verification code.',
+      message : 'Registration successful! (Auto-verified) You can now log in.',
       userId  : rows[0].id,
       email   : rows[0].email
     });
@@ -144,14 +136,13 @@ const registerEngineer = async (req, res) => {
       INSERT INTO users
         (role, status, first_name, last_name, email, phone, password_hash,
          nationality, date_of_birth, residential_address, id_type, id_number,
-         id_document_url, security_question, security_answer,
-         email_otp, email_otp_expires)
-      VALUES ('engineer','pending_email',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+         id_document_url, security_question, security_answer, email_verified)
+      VALUES ('engineer','pending_review',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,TRUE)
       RETURNING id
     `, [
       firstName, lastName, email.toLowerCase(), phone, passwordHash,
       nationality, dateOfBirth, residentialAddress, idType, idNumber,
-      idDocUrl, securityQuestion, answerHash, otpHash, otpExpires
+      idDocUrl, securityQuestion, answerHash
     ]);
 
     const userId = userRows[0].id;
@@ -172,10 +163,8 @@ const registerEngineer = async (req, res) => {
 
     await client.query('COMMIT');
 
-    emailSvc.sendOTP({ to: email, name: firstName, otp, purpose: 'verification' }).catch(console.error);
-
     res.status(201).json({
-      message : 'Registration submitted. Verify your email, then our team will review your licence (24–48hrs).',
+      message : 'Registration successful! (Email Auto-verified). Our team will review your licence (24–48hrs).',
       userId,
       email   : email.toLowerCase()
     });
@@ -225,13 +214,13 @@ const registerSupplier = async (req, res) => {
       INSERT INTO users
         (role, status, first_name, last_name, email, phone, password_hash,
          nationality, date_of_birth, id_type, id_number, id_document_url,
-         security_question, security_answer, email_otp, email_otp_expires)
-      VALUES ('supplier','pending_email',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+         security_question, security_answer, email_verified)
+      VALUES ('supplier','pending_review',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,TRUE)
       RETURNING id
     `, [
       firstName, lastName, email.toLowerCase(), phone, passwordHash,
       nationality, dateOfBirth, idType, idNumber, idDocUrl,
-      securityQuestion, answerHash, otpHash, otpExpires
+      securityQuestion, answerHash
     ]);
 
     const userId = userRows[0].id;
@@ -255,10 +244,8 @@ const registerSupplier = async (req, res) => {
 
     await client.query('COMMIT');
 
-    emailSvc.sendOTP({ to: email, name: firstName, otp, purpose: 'verification' }).catch(console.error);
-
     res.status(201).json({
-      message : 'Store registered. Verify your email — you can list inventory immediately. CAC verification takes 24–48hrs.',
+      message : 'Store registered! (Email Auto-verified). You can list inventory immediately. CAC verification takes 24–48hrs.',
       userId,
       email   : email.toLowerCase()
     });
@@ -378,6 +365,7 @@ const login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: 'Incorrect email or password.' });
 
+    /* Skipping email verification per user request
     if (!user.email_verified) {
       return res.status(403).json({
         error  : 'Email not verified. Please check your inbox.',
@@ -385,6 +373,7 @@ const login = async (req, res) => {
         needsVerification: true
       });
     }
+    */
 
     if (user.status === 'pending_review') {
       return res.status(403).json({
