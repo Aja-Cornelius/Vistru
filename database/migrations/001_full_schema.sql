@@ -55,7 +55,7 @@ CREATE TABLE users (
 
   -- Email verification
   email_verified    BOOLEAN       DEFAULT FALSE,
-  email_otp         VARCHAR(10),
+  email_otp         TEXT,
   email_otp_expires TIMESTAMPTZ,
 
   -- Password reset

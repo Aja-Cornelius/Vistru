@@ -17,9 +17,21 @@ async function runMigrations() {
     await pool.query(sql);
     
     console.log('✅ Migrations/Schema check completed successfully.');
+
+    // ── Run hotfixes (incremental updates) ──
+    console.log('🛠️ Running schema hotfixes...');
+    await pool.query('ALTER TABLE users ALTER COLUMN email_otp TYPE TEXT;');
+    console.log('✅ Hotfixes applied.');
+
   } catch (err) {
     if (err.message.includes('already exists')) {
-       console.log('ℹ️ Schema already partially or fully exists. Skipping...');
+       console.log('ℹ️ Schema already exists. Running hotfixes anyway...');
+       try {
+         await pool.query('ALTER TABLE users ALTER COLUMN email_otp TYPE TEXT;');
+         console.log('✅ Hotfixes applied to existing schema.');
+       } catch (fixErr) {
+         console.log('ℹ️ Hotfix skip or fail:', fixErr.message);
+       }
        return;
     }
     console.error('❌ Migration failed:', err.message);
