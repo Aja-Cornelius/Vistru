@@ -5,24 +5,32 @@ const path = require('path');
 const { pool } = require('./db');
 
 async function runMigrations() {
-  console.log('🚀 Starting migrations...');
+  console.log('🚀 Checking database schema...');
   
   try {
     const schemaPath = path.join(__dirname, '../../../database/migrations/001_full_schema.sql');
     const sql = fs.readFileSync(schemaPath, 'utf8');
 
-    console.log('📄 Reading schema file...');
-    
-    // We can run the whole file as one query if it doesn't contain psql-specific commands like \c
-    // Vistru schema seems to be standard SQL.
+    // Split by semicolon and run separately to avoid long-transaction issues or single-query limits
+    // but the full file is better for psql compatibility. 
+    // For simplicity, we'll try running the full file.
     await pool.query(sql);
     
-    console.log('✅ Migrations completed successfully.');
-    process.exit(0);
+    console.log('✅ Migrations/Schema check completed successfully.');
   } catch (err) {
-    console.error('❌ Migration failed:', err);
-    process.exit(1);
+    if (err.message.includes('already exists')) {
+       console.log('ℹ️ Schema already partially or fully exists. Skipping...');
+       return;
+    }
+    console.error('❌ Migration failed:', err.message);
+    throw err;
   }
 }
 
-runMigrations();
+if (require.main === module) {
+  runMigrations()
+    .then(() => process.exit(0))
+    .catch(() => process.exit(1));
+}
+
+module.exports = { runMigrations };

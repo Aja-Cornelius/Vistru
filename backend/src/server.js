@@ -98,6 +98,8 @@ app.use((err, req, res, next) => {
   });
 });
 
+const { runMigrations } = require('./config/migrate');
+
 // ── Start server ──
 app.listen(PORT, async () => {
   console.log(`\n🏗️  Vistru API running on port ${PORT}`);
@@ -106,7 +108,14 @@ app.listen(PORT, async () => {
   const dbHost = process.env.DB_HOST || (process.env.DATABASE_URL ? 'Neon' : 'localhost');
   console.log(`   Database    : ${dbName}@${dbHost}`);
 
-  // Test DB connection
+  // 1. Run migrations
+  try {
+    await runMigrations();
+  } catch (err) {
+    console.error('   Migrations  : ❌ Failed to ensure schema');
+  }
+
+  // 2. Test DB connection
   try {
     await db.query('SELECT NOW()');
     console.log(`   DB Status   : ✅ Connected\n`);
