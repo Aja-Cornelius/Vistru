@@ -364,10 +364,21 @@ textarea.form-input { resize: vertical; min-height: 100px; }
   transition: opacity 0.4s ease;
 }
 .page-loader.hidden { opacity: 0; pointer-events: none; }
-.logo { display: flex; align-items: center; gap: 12px; }
-.logo img { height: 48px; width: auto; }
-.page-loader .logo {
+.logo-image { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
+.logo-image img { 
+  max-height: 42px; 
+  width: auto; 
+  object-fit: contain;
+}
+.page-loader .logo-image {
   animation: pulse 1.5s ease infinite;
+}
+.page-loader .logo-image img {
+  max-height: 64px;
 }
 .logo-text {
   font-family: var(--font-display);
