@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vistru Engineer Dashboard — Manage your construction projects, submit BOQs, track milestones, and apply for project loans.">
+  <title>Engineer Dashboard — Vistru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/dashboard.css">
+</head>
+<body>
+
+<div class="page-loader" id="page-loader">
+  <div class="logo">Vis<span>tru</span></div>
+</div>
+
+<div id="navbar-container"></div>
+
+<div class="dashboard-page">
+  <div class="dashboard-body">
+
+    <!-- ═══════════════════════════
+         SIDEBAR
+         ═══════════════════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sb-avatar">E</div>
+          <div>
+            <div class="sidebar-name" id="sb-name">Loading...</div>
+            <div class="sidebar-role">Civil Engineer</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Projects</div>
+        <a class="sidebar-item active" onclick="showPanel('overview',this)">
+          <span class="s-icon">📊</span> Overview
+        </a>
+        <a class="sidebar-item" onclick="showPanel('open-projects',this)">
+          <span class="s-icon">🔍</span> Browse Open Projects
+        </a>
+        <a class="sidebar-item" onclick="showPanel('my-projects',this)">
+          <span class="s-icon">🏗️</span> My Active Projects
+        </a>
+
+        <div class="sidebar-section-label">Finance</div>
+        <a class="sidebar-item" onclick="showPanel('loans',this)">
+          <span class="s-icon">💼</span> Project Loans
+        </a>
+
+        <div class="sidebar-section-label">Account</div>
+        <a class="sidebar-item" onclick="showPanel('profile',this)">
+          <span class="s-icon">👤</span> My Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" onclick="handleLogout()">
+          <span class="s-icon">🚪</span> Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile sidebar toggle -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- ═══════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════ -->
+    <main class="main-content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="content-panel active" id="panel-overview">
+        <div class="page-header">
+          <div class="page-title">Engineer Dashboard</div>
+          <div class="page-sub">Track your projects, milestones, and earnings</div>
+        </div>
+
+        <div class="metric-row" id="eng-metrics">
+          <div class="metric-card gold skeleton" style="height:120px"></div>
+          <div class="metric-card blue skeleton" style="height:120px"></div>
+          <div class="metric-card green skeleton" style="height:120px"></div>
+          <div class="metric-card amber skeleton" style="height:120px"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Active Projects</div></div>
+            <div class="card-body" id="active-projects-list">
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recent Activity</div></div>
+            <div class="card-body">
+              <div class="timeline" id="eng-activity">
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OPEN PROJECTS ── -->
+      <div class="content-panel" id="panel-open-projects">
+        <div class="page-header">
+          <div class="page-title">Browse Open Projects</div>
+          <div class="page-sub">Find construction projects in your region and submit your Bill of Quantity bid.</div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-body" style="display:flex;gap:12px;align-items:center">
+            <select class="form-select" id="filter-state" style="max-width:220px" onchange="loadOpenProjects()">
+              <option value="">All States</option>
+              <option>Lagos</option><option>Abuja</option><option>Rivers</option>
+              <option>Oyo</option><option>Kano</option><option>Enugu</option>
+              <option>Delta</option><option>Edo</option><option>Anambra</option>
+              <option>Imo</option><option>Kaduna</option><option>Ogun</option>
+            </select>
+            <button class="btn btn-navy btn-sm" onclick="loadOpenProjects()">🔍 Search</button>
+          </div>
+        </div>
+
+        <div id="open-projects-content">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- ── MY PROJECTS ── -->
+      <div class="content-panel" id="panel-my-projects">
+        <div class="page-header">
+          <div class="page-title">My Active Projects</div>
+          <div class="page-sub">Projects you have been awarded. Track milestones and file completions.</div>
+        </div>
+        <div id="my-projects-content">
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- ── PROJECT LOANS ── -->
+      <div class="content-panel" id="panel-loans">
+        <div class="page-header">
+          <div class="page-title">Project Loans</div>
+          <div class="page-sub">Apply for a milestone advance to cover workers' wages and site costs. Loan is automatically deducted when milestone escrow is released.</div>
+        </div>
+
+        <div class="alert alert-blue">ℹ️ Loans are only available for milestones that have been funded into escrow. Maximum loan amount is 60% of the funded milestone value.</div>
+
+        <div id="loans-content">
+          <div class="empty-state">
+            <div class="empty-icon">💼</div>
+            <h4>No loan history</h4>
+            <p>You have not applied for any project loans yet.</p>
+          </div>
+        </div>
+
+        <!-- Loan application form -->
+        <div class="card" style="margin-top:20px" id="loan-form-card" style="display:none">
+          <div class="card-header"><div class="card-title">Apply for Project Loan</div></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Project <span class="required">*</span></label>
+              <select class="form-select" id="loan-project"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Milestone <span class="required">*</span></label>
+              <select class="form-select" id="loan-milestone">
+                <option value="">Select a project first</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount Requested (₦) <span class="required">*</span></label>
+              <input class="form-input" id="loan-amount" type="number" placeholder="e.g. 500000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Purpose</label>
+              <textarea class="form-input" id="loan-purpose" rows="3" placeholder="e.g. Workers' wages for block laying phase"></textarea>
+            </div>
+            <button class="btn btn-primary btn-full" id="loan-submit-btn" onclick="submitLoanApplication()">Submit Loan Application →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div class="content-panel" id="panel-profile">
+        <div class="page-header">
+          <div class="page-title">My Profile</div>
+          <div class="page-sub">Your registered credentials on the Vistru platform.</div>
+        </div>
+        <div id="profile-content">
+          <div class="skeleton skeleton-card" style="height:200px"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     BOQ SUBMISSION MODAL
+     ═══════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-boq" style="display:none" onclick="if(event.target===this)closeModal('modal-boq')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📐 Submit BOQ Bid</div>
+      <button class="modal-close" onclick="closeModal('modal-boq')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="boq-project-info" style="background:#F5F8FC;border-radius:8px;padding:14px;margin-bottom:16px;font-size:0.85rem"></div>
+      <div class="form-group">
+        <label class="form-label">Total BOQ Value (₦) <span class="required">*</span></label>
+        <input class="form-input" id="boq-total" type="number" placeholder="e.g. 15000000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Estimated Duration (months) <span class="required">*</span></label>
+        <input class="form-input" id="boq-duration" type="number" placeholder="e.g. 8">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Milestone Breakdown</label>
+        <textarea class="form-input" id="boq-breakdown" rows="4" placeholder="e.g. M1 Foundation ₦3M (4 weeks), M2 Block ₦4M (6 weeks)..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">BOQ Document URL (optional)</label>
+        <input class="form-input" id="boq-doc-url" type="url" placeholder="https://drive.google.com/...">
+      </div>
+      <button class="btn btn-primary btn-full" id="boq-submit-btn" onclick="submitBOQ()">Submit BOQ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- File Milestone Modal -->
+<div class="modal-backdrop" id="modal-file-milestone" style="display:none" onclick="if(event.target===this)closeModal('modal-file-milestone')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📋 File Milestone as Complete</div>
+      <button class="modal-close" onclick="closeModal('modal-file-milestone')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-gold">⚠️ Filing a milestone as complete notifies the client. They will review CCTV footage and AI reports before releasing your escrow payment.</div>
+      <div id="file-milestone-info" style="background:#F5F8FC;border-radius:8px;padding:14px;margin-bottom:16px;font-size:0.85rem"></div>
+      <div class="form-group">
+        <label class="form-label">Completion Notes</label>
+        <textarea class="form-input" id="file-milestone-notes" rows="3" placeholder="Describe the work completed for this milestone..."></textarea>
+      </div>
+      <button class="btn btn-green btn-full" onclick="confirmFileMilestone()">✅ File as Complete</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(11,31,58,0.8);
+  z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 520px; max-width: 95vw; max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  animation: fadeUp 0.25s ease;
+}
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-title { font-size: 1rem; font-weight: 700; color: var(--navy); }
+.modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--slate); }
+.modal-close:hover { color: var(--navy); }
+.modal-body { padding: 20px 24px 24px; }
+
+.project-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+.project-card:hover { border-color: var(--gold); box-shadow: var(--shadow-sm); }
+.project-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.project-meta-label { font-size: 0.68rem; text-transform: uppercase; font-weight: 600; color: var(--slate); letter-spacing: 0.06em; }
+.project-meta-val { font-size: 0.88rem; font-weight: 600; color: var(--navy); margin-top: 2px; }
+</style>
+
+<script src="../../js/i18n.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/utils.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   ENGINEER DASHBOARD — Main Logic
+   ═══════════════════════════════════════════════════════════ */
+
+let engineerData = null;
+let currentUser = null;
+let selectedProjectId = null;
+let fileMilestoneData = null;
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth('engineer')) return;
+
+  fetch('../../components/navbar.html')
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById('navbar-container').innerHTML = html;
+      updateNavAuth?.();
+    });
+
+  setTimeout(() => {
+    const loader = document.getElementById('page-loader');
+    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 400); }
+  }, 600);
+
+  currentUser = VistruAPI.Auth.getUser();
+  updateSidebarUser();
+  await loadDashboard();
+});
+
+function updateSidebarUser() {
+  if (!currentUser) return;
+  const avatar = document.getElementById('sb-avatar');
+  const name = document.getElementById('sb-name');
+  if (avatar) avatar.textContent = (currentUser.firstName || currentUser.first_name || 'E').charAt(0).toUpperCase();
+  if (name) name.textContent = `${currentUser.firstName || currentUser.first_name || ''} ${currentUser.lastName || currentUser.last_name || ''}`.trim() || 'Engineer';
+}
+
+// ── Load dashboard ──
+async function loadDashboard() {
+  try {
+    engineerData = await VistruAPI.EngineerAPI.getDashboard();
+    renderOverview();
+    renderMyProjects();
+    renderProfile();
+    renderLoans();
+    loadOpenProjects();
+  } catch (err) {
+    console.error('Dashboard load error:', err);
+    showToast('Failed to load dashboard data.', 'error');
+  }
+}
+
+// ── Render Overview ──
+function renderOverview() {
+  const projects = engineerData.projects || [];
+  const profile = engineerData.profile || {};
+
+  const activeCount = projects.length;
+  const totalMilestones = projects.reduce((sum, p) => sum + (p.total_milestones || 0), 0);
+  const completedMilestones = projects.reduce((sum, p) => sum + (p.current_milestone || 0), 0);
+
+  document.getElementById('eng-metrics').innerHTML = `
+    <div class="metric-card gold">
+      <div class="metric-label">Active Projects</div>
+      <div class="metric-value">${activeCount}</div>
+      <div class="metric-sub">Under construction</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Specialisation</div>
+      <div class="metric-value" style="font-size:1.2rem">${profile.discipline || 'General'}</div>
+      <div class="metric-sub">${profile.years_experience || '—'} years experience</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Milestones</div>
+      <div class="metric-value">${completedMilestones} / ${totalMilestones}</div>
+      <div class="metric-sub">Completed across all projects</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Account Status</div>
+      <div class="metric-value" style="font-size:1.2rem">${(engineerData.user?.status || 'active').replace(/_/g,' ')}</div>
+      <div class="metric-sub">Platform verification</div>
+    </div>
+  `;
+
+  // Active projects list
+  document.getElementById('active-projects-list').innerHTML = projects.length ? projects.map(p => `
+    <div class="milestone-item ${p.current_milestone_status === 'filed' ? 'pending-action' : ''}">
+      <span>${p.status === 'in_progress' ? '🏗️' : '📋'}</span>
+      <div style="flex:1">
+        <div class="milestone-name">${p.title}</div>
+        <div class="milestone-detail">${p.site_address || p.site_state || '—'} · Milestone ${p.current_milestone || 0} of ${p.total_milestones || 0}</div>
+      </div>
+      <span class="badge ${p.status === 'in_progress' ? 'badge-green' : 'badge-amber'}">${p.status.replace(/_/g, ' ')}</span>
+    </div>
+  `).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h4>No active projects</h4>
+      <p>Browse open projects and submit your BOQ to get started.</p>
+    </div>
+  `;
+
+  // Activity
+  document.getElementById('eng-activity').innerHTML = projects.length ? projects.slice(0, 4).map(p => `
+    <div class="timeline-item">
+      <div class="timeline-dot ${p.status === 'in_progress' ? 'dot-green' : 'dot-blue'}"></div>
+      <div>
+        <div class="timeline-title">${p.title} — ${p.status.replace(/_/g, ' ')}</div>
+        <div class="timeline-meta">${p.site_state || '—'} · ${formatNaira(p.contract_value || 0)}</div>
+      </div>
+    </div>
+  `).join('') : '<div style="font-size:0.82rem;color:var(--slate);text-align:center;padding:12px">No activity yet</div>';
+}
+
+// ── Open Projects ──
+async function loadOpenProjects() {
+  const state = document.getElementById('filter-state')?.value || '';
+  try {
+    const data = await VistruAPI.ProjectAPI.getOpenProjects(state);
+    const projects = data.projects || [];
+
+    document.getElementById('open-projects-content').innerHTML = projects.length ? projects.map(p => `
+      <div class="project-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-size:1.05rem;font-weight:700;color:var(--navy)">${p.title}</div>
+            <div style="font-size:0.8rem;color:var(--slate);margin-top:2px">${p.project_type || 'Residential'} · Posted ${formatDate(p.created_at)}</div>
+          </div>
+          <span class="badge badge-green">Open for Bids</span>
+        </div>
+        <div class="project-meta">
+          <div><div class="project-meta-label">Location</div><div class="project-meta-val">${p.site_address || '—'}, ${p.site_state || '—'}</div></div>
+          <div><div class="project-meta-label">Client</div><div class="project-meta-val">${p.client_name || 'Anonymous'}</div></div>
+          <div><div class="project-meta-label">Drawings</div><div class="project-meta-val">${p.drawing_count || 0} uploaded</div></div>
+          <div><div class="project-meta-label">Current BOQs</div><div class="project-meta-val">${p.boq_count || 0} bids</div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <button class="btn btn-primary btn-sm" onclick="openBOQModal('${p.id}','${(p.title || '').replace(/'/g,"\\'")}','${p.site_state || ''}')">📐 Submit My BOQ</button>
+          <button class="btn btn-ghost btn-sm">View Drawings</button>
+        </div>
+      </div>
+    `).join('') : `
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h4>No open projects${state ? ' in ' + state : ''}</h4>
+        <p>Check back later or try a different state filter.</p>
+      </div>
+    `;
+  } catch (err) {
+    document.getElementById('open-projects-content').innerHTML = `
+      <div class="empty-state"><div class="empty-icon">⚠️</div><h4>Could not load projects</h4><p>${err.message}</p></div>
+    `;
+  }
+}
+
+// ── BOQ Modal ──
+function openBOQModal(projectId, title, state) {
+  selectedProjectId = projectId;
+  document.getElementById('boq-project-info').innerHTML = `
+    <div style="font-weight:700;margin-bottom:4px">${title}</div>
+    <div style="color:var(--slate);font-size:0.8rem">${state}</div>
+  `;
+  document.getElementById('boq-total').value = '';
+  document.getElementById('boq-duration').value = '';
+  document.getElementById('boq-breakdown').value = '';
+  document.getElementById('boq-doc-url').value = '';
+  document.getElementById('modal-boq').style.display = 'flex';
+}
+
+async function submitBOQ() {
+  const totalValue = parseFloat(document.getElementById('boq-total').value);
+  const durationMonths = parseInt(document.getElementById('boq-duration').value);
+  const milestoneBreakdown = document.getElementById('boq-breakdown').value;
+  const boqDocUrl = document.getElementById('boq-doc-url').value;
+
+  if (!totalValue || !durationMonths) {
+    showToast('Please fill in the total value and duration.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('boq-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+  try {
+    await VistruAPI.ProjectAPI.submitBOQ(
+      buildBOQFormData({ projectId: selectedProjectId, totalValue, durationMonths, milestoneBreakdown, boqDocUrl })
+    );
+    showToast('✅ BOQ submitted successfully! The client has been notified.', 'success');
+    closeModal('modal-boq');
+    loadOpenProjects();
+  } catch (err) {
+    showToast(err.message || 'BOQ submission failed.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Submit BOQ →';
+  }
+}
+
+function buildBOQFormData(data) {
+  const fd = new FormData();
+  Object.entries(data).forEach(([k, v]) => { if (v) fd.append(k, v); });
+  return fd;
+}
+
+// ── My Projects ──
+function renderMyProjects() {
+  const projects = engineerData.projects || [];
+
+  document.getElementById('my-projects-content').innerHTML = projects.length ? projects.map(p => `
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">
+        <div class="card-title">${p.title}</div>
+        <span class="badge ${p.status === 'in_progress' ? 'badge-green' : p.status === 'completed' ? 'badge-blue' : 'badge-amber'}">${p.status.replace(/_/g,' ')}</span>
+      </div>
+      <div class="card-body">
+        <div class="project-meta">
+          <div><div class="project-meta-label">Location</div><div class="project-meta-val">${p.site_address || p.site_state || '—'}</div></div>
+          <div><div class="project-meta-label">Contract Value</div><div class="project-meta-val">${formatNaira(p.contract_value || 0)}</div></div>
+          <div><div class="project-meta-label">Progress</div><div class="project-meta-val">Milestone ${p.current_milestone || 0} of ${p.total_milestones || 0}</div></div>
+          <div><div class="project-meta-label">Current Status</div><div class="project-meta-val">${(p.current_milestone_status || 'pending').replace(/_/g,' ')}</div></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:0.8rem;font-weight:500">Completion</span>
+            <span style="font-size:0.8rem;font-weight:700">${p.completion_percent || 0}%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${p.completion_percent || 0}%"></div></div>
+        </div>
+
+        ${p.status === 'in_progress' && p.current_milestone_status !== 'filed' ? `
+          <div style="margin-top:16px">
+            <button class="btn btn-green btn-sm" onclick="openFileMilestoneModal('${p.id}','${(p.title || '').replace(/'/g,"\\'")}',${p.current_milestone || 0},'Milestone ${p.current_milestone || 0}')">
+              ✅ File Current Milestone as Complete
+            </button>
+          </div>
+        ` : p.current_milestone_status === 'filed' ? `
+          <div class="alert alert-gold" style="margin-top:16px;margin-bottom:0">
+            ⏳ <strong>Milestone filed.</strong> Waiting for client to review and release escrow payment.
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h4>No active projects</h4>
+      <p>You have not been awarded any projects yet. Browse open projects and submit your BOQ to get started.</p>
+    </div>
+  `;
+}
+
+// ── File Milestone ──
+function openFileMilestoneModal(projectId, title, milestoneNum, milestoneName) {
+  fileMilestoneData = { projectId, milestoneNum };
+  document.getElementById('file-milestone-info').innerHTML = `
+    <div style="font-weight:700;margin-bottom:4px">${title}</div>
+    <div style="color:var(--slate);font-size:0.8rem">${milestoneName}</div>
+  `;
+  document.getElementById('file-milestone-notes').value = '';
+  document.getElementById('modal-file-milestone').style.display = 'flex';
+}
+
+async function confirmFileMilestone() {
+  if (!fileMilestoneData) return;
+  const notes = document.getElementById('file-milestone-notes').value;
+  try {
+    await VistruAPI.ProjectAPI.fileMilestone(fileMilestoneData.projectId, fileMilestoneData.milestoneNum, notes);
+    showToast('✅ Milestone filed as complete. Client has been notified.', 'success');
+    closeModal('modal-file-milestone');
+    await loadDashboard();
+  } catch (err) {
+    showToast(err.message || 'Could not file milestone.', 'error');
+  }
+}
+
+// ── Loans ──
+function renderLoans() {
+  const projects = engineerData.projects || [];
+  if (projects.length > 0) {
+    const loanProjectSelect = document.getElementById('loan-project');
+    loanProjectSelect.innerHTML = '<option value="">Select a project</option>' +
+      projects.map(p => `<option value="${p.id}">${p.title}</option>`).join('');
+    document.getElementById('loan-form-card').style.display = '';
+  }
+}
+
+async function submitLoanApplication() {
+  const projectId = document.getElementById('loan-project').value;
+  const milestoneId = document.getElementById('loan-milestone').value;
+  const amountRequested = parseFloat(document.getElementById('loan-amount').value);
+  const purpose = document.getElementById('loan-purpose').value;
+
+  if (!projectId || !amountRequested) {
+    showToast('Please select a project and enter an amount.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('loan-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+  try {
+    await VistruAPI.EngineerAPI.applyForLoan({ projectId, milestoneId, amountRequested, purpose });
+    showToast('✅ Loan application submitted! You will be notified of approval.', 'success');
+    document.getElementById('loan-amount').value = '';
+    document.getElementById('loan-purpose').value = '';
+  } catch (err) {
+    showToast(err.message || 'Loan application failed.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Submit Loan Application →';
+  }
+}
+
+// ── Profile ──
+function renderProfile() {
+  const user = engineerData.user || currentUser || {};
+  const profile = engineerData.profile || {};
+
+  document.getElementById('profile-content').innerHTML = `
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Personal Information</div></div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">Name</div><div class="timeline-meta">${user.first_name || ''} ${user.last_name || ''}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">Email</div><div class="timeline-meta">${user.email || '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">Phone</div><div class="timeline-meta">${user.phone || '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">State</div><div class="timeline-meta">${profile.primary_state || user.residential_state || '—'}</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Professional Credentials</div></div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Licence Number</div><div class="timeline-meta">${profile.licence_number || '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Licence Body</div><div class="timeline-meta">${profile.licence_body || '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Licence Expiry</div><div class="timeline-meta">${profile.licence_expiry ? formatDate(profile.licence_expiry) : '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Discipline</div><div class="timeline-meta">${profile.discipline || '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Experience</div><div class="timeline-meta">${profile.years_experience || '—'} years</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Shared ──
+function showPanel(id, el) {
+  document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('panel-' + id)?.classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+async function handleLogout() {
+  await VistruAPI.AuthAPI.logout();
+}
+
+function updateNavAuth() {
+  // Handled by navbar component
+}
+</script>
+</body>
+</html>

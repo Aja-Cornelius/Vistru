@@ -322,6 +322,37 @@ const AdminAPI = {
 };
 
 // ═══════════════════════════════════════════
+//  LAWYER API
+// ═══════════════════════════════════════════
+const LawyerAPI = {
+
+  getDashboard: async () => apiFetch('/lawyer/dashboard'),
+
+  issueLandVerdict: async (verificationId, data) =>
+    apiFetch(`/lawyer/land/${verificationId}/verdict`, {
+      method : 'PATCH',
+      body   : JSON.stringify(data)
+    }),
+
+  draftContract: async (data) => apiFetch('/lawyer/contract', {
+    method : 'POST',
+    body   : JSON.stringify(data)
+  }),
+
+  scheduleHearing: async (caseId, hearingDate) =>
+    apiFetch(`/lawyer/arbitration/${caseId}/schedule`, {
+      method : 'PATCH',
+      body   : JSON.stringify({ hearingDate })
+    }),
+
+  issueRuling: async (caseId, ruling) =>
+    apiFetch(`/lawyer/arbitration/${caseId}/ruling`, {
+      method : 'PATCH',
+      body   : JSON.stringify({ ruling })
+    })
+};
+
+// ═══════════════════════════════════════════
 //  UI HELPERS — wire API calls to the prototype DOM
 // ═══════════════════════════════════════════
 
@@ -407,7 +438,7 @@ if (typeof module !== 'undefined') {
   // Browser global
   window.VistruAPI = {
     Auth, AuthAPI, ProjectAPI, EscrowAPI, SupplierAPI,
-    EngineerAPI, NotificationsAPI, ArbitrationAPI, CCTVAPI, AdminAPI,
+    EngineerAPI, NotificationsAPI, ArbitrationAPI, CCTVAPI, AdminAPI, LawyerAPI,
     buildRegFormData, apiToast, requireAuth, populateSidebar,
     formatNaira, formatDate
   };

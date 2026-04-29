@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vistru Lawyer Dashboard — Verify land documents, draft contracts, and manage arbitration cases for construction projects.">
+  <title>Lawyer Dashboard — Vistru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/dashboard.css">
+</head>
+<body>
+
+<div class="page-loader" id="page-loader">
+  <div class="logo">Vis<span>tru</span></div>
+</div>
+
+<div id="navbar-container"></div>
+
+<div class="dashboard-page">
+  <div class="dashboard-body">
+
+    <!-- ═══════════════════════════
+         SIDEBAR
+         ═══════════════════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sb-avatar">L</div>
+          <div>
+            <div class="sidebar-name" id="sb-name">Loading...</div>
+            <div class="sidebar-role">Platform Lawyer</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Legal Work</div>
+        <a class="sidebar-item active" onclick="showPanel('overview',this)">
+          <span class="s-icon">📊</span> Overview
+        </a>
+        <a class="sidebar-item" onclick="showPanel('land',this)">
+          <span class="s-icon">📄</span> Land Verification
+          <span class="sidebar-badge red" id="land-badge" style="display:none">0</span>
+        </a>
+        <a class="sidebar-item" onclick="showPanel('contracts',this)">
+          <span class="s-icon">📜</span> Contracts
+        </a>
+        <a class="sidebar-item" onclick="showPanel('arbitration',this)">
+          <span class="s-icon">⚖️</span> Arbitration
+          <span class="sidebar-badge" id="arb-badge" style="display:none">0</span>
+        </a>
+
+        <div class="sidebar-section-label">Account</div>
+        <a class="sidebar-item" onclick="showPanel('profile',this)">
+          <span class="s-icon">👤</span> My Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" onclick="handleLogout()">
+          <span class="s-icon">🚪</span> Logout
+        </button>
+      </div>
+    </aside>
+
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- ═══════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════ -->
+    <main class="main-content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="content-panel active" id="panel-overview">
+        <div class="page-header">
+          <div class="page-title">Lawyer Dashboard</div>
+          <div class="page-sub">Manage land verifications, contracts, and arbitration cases</div>
+        </div>
+
+        <div class="metric-row" id="law-metrics">
+          <div class="metric-card gold skeleton" style="height:120px"></div>
+          <div class="metric-card blue skeleton" style="height:120px"></div>
+          <div class="metric-card green skeleton" style="height:120px"></div>
+          <div class="metric-card amber skeleton" style="height:120px"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Pending Verification Queue</div></div>
+            <div class="card-body" id="overview-queue">
+              <div class="skeleton skeleton-card"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recent Contracts</div></div>
+            <div class="card-body" id="overview-contracts">
+              <div class="skeleton skeleton-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LAND VERIFICATION ── -->
+      <div class="content-panel" id="panel-land">
+        <div class="page-header">
+          <div class="page-title">Land Document Verification</div>
+          <div class="page-sub">Review client-submitted land ownership documents. Issue a verdict before the project can proceed to construction.</div>
+        </div>
+
+        <div class="alert alert-blue">ℹ️ <strong>Process:</strong> Verify authenticity of documents, confirm at the state Ministry of Lands, check for encumbrances/litigation, then issue your verdict.</div>
+
+        <div id="land-queue-content">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- ── CONTRACTS ── -->
+      <div class="content-panel" id="panel-contracts">
+        <div class="page-header">
+          <div class="page-title">Contracts</div>
+          <div class="page-sub">View and manage client-engineer contracts you have drafted.</div>
+        </div>
+        <div id="contracts-content">
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- ── ARBITRATION ── -->
+      <div class="content-panel" id="panel-arbitration">
+        <div class="page-header">
+          <div class="page-title">Arbitration Cases</div>
+          <div class="page-sub">Manage assigned dispute cases. Schedule hearings and issue binding rulings.</div>
+        </div>
+        <div id="arbitration-content">
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div class="content-panel" id="panel-profile">
+        <div class="page-header">
+          <div class="page-title">My Profile</div>
+          <div class="page-sub">Your registered credentials on the Vistru platform.</div>
+        </div>
+        <div id="profile-content">
+          <div class="skeleton skeleton-card" style="height:200px"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VERDICT MODAL
+     ═══════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-verdict" style="display:none" onclick="if(event.target===this)closeModal('modal-verdict')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📄 Issue Land Verdict</div>
+      <button class="modal-close" onclick="closeModal('modal-verdict')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-gold">⚠️ Your verdict is <strong>binding</strong>. A verified verdict unlocks drawing upload for the client. A dispute finding halts the project.</div>
+      <div id="verdict-project-info" style="background:#F5F8FC;border-radius:8px;padding:14px;margin-bottom:16px;font-size:0.85rem"></div>
+      <div class="form-group">
+        <label class="form-label">Verdict <span class="required">*</span></label>
+        <select class="form-select" id="verdict-decision">
+          <option value="verified">✅ Verified — Land is legitimate and dispute-free</option>
+          <option value="disputed">⛔ Disputed — Issue found with documents</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes / Findings <span class="required">*</span></label>
+        <textarea class="form-input" id="verdict-notes" rows="4" placeholder="Detail your findings from the verification process..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Verification Fee Charged (₦)</label>
+        <input class="form-input" id="verdict-fee" type="number" placeholder="e.g. 50000">
+      </div>
+      <button class="btn btn-primary btn-full" id="verdict-submit-btn" onclick="submitVerdict()">Submit Verdict →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Schedule Hearing Modal -->
+<div class="modal-backdrop" id="modal-hearing" style="display:none" onclick="if(event.target===this)closeModal('modal-hearing')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📅 Schedule Hearing</div>
+      <button class="modal-close" onclick="closeModal('modal-hearing')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="hearing-case-info" style="background:#F5F8FC;border-radius:8px;padding:14px;margin-bottom:16px;font-size:0.85rem"></div>
+      <div class="form-group">
+        <label class="form-label">Hearing Date <span class="required">*</span></label>
+        <input class="form-input" id="hearing-date" type="datetime-local">
+      </div>
+      <button class="btn btn-navy btn-full" onclick="confirmScheduleHearing()">Schedule Hearing →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Issue Ruling Modal -->
+<div class="modal-backdrop" id="modal-ruling" style="display:none" onclick="if(event.target===this)closeModal('modal-ruling')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">⚖️ Issue Ruling</div>
+      <button class="modal-close" onclick="closeModal('modal-ruling')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-gold">⚠️ Your ruling is <strong>binding</strong> and will determine the outcome of the dispute, including any escrow reallocation.</div>
+      <div id="ruling-case-info" style="background:#F5F8FC;border-radius:8px;padding:14px;margin-bottom:16px;font-size:0.85rem"></div>
+      <div class="form-group">
+        <label class="form-label">Ruling <span class="required">*</span></label>
+        <textarea class="form-input" id="ruling-text" rows="5" placeholder="State your ruling and any remedies ordered..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="confirmIssueRuling()">Issue Ruling →</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(11,31,58,0.8);
+  z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 520px; max-width: 95vw; max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  animation: fadeUp 0.25s ease;
+}
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-title { font-size: 1rem; font-weight: 700; color: var(--navy); }
+.modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--slate); }
+.modal-close:hover { color: var(--navy); }
+.modal-body { padding: 20px 24px 24px; }
+
+.verification-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+.verification-card:hover { border-color: var(--gold); box-shadow: var(--shadow-sm); }
+.verification-card.urgent { border-left: 4px solid var(--gold); }
+.verification-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 14px 0;
+}
+.verification-meta-label { font-size: 0.68rem; text-transform: uppercase; font-weight: 600; color: var(--slate); letter-spacing: 0.06em; }
+.verification-meta-val { font-size: 0.88rem; font-weight: 600; color: var(--navy); margin-top: 2px; }
+</style>
+
+<script src="../../js/i18n.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/utils.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   LAWYER DASHBOARD — Main Logic
+   ═══════════════════════════════════════════════════════════ */
+
+let lawyerData = null;
+let currentUser = null;
+let selectedVerificationId = null;
+let selectedCaseId = null;
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth('lawyer')) return;
+
+  fetch('../../components/navbar.html')
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById('navbar-container').innerHTML = html;
+      updateNavAuth?.();
+    });
+
+  setTimeout(() => {
+    const loader = document.getElementById('page-loader');
+    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 400); }
+  }, 600);
+
+  currentUser = VistruAPI.Auth.getUser();
+  updateSidebarUser();
+  await loadDashboard();
+});
+
+function updateSidebarUser() {
+  if (!currentUser) return;
+  const avatar = document.getElementById('sb-avatar');
+  const name = document.getElementById('sb-name');
+  if (avatar) avatar.textContent = (currentUser.firstName || currentUser.first_name || 'L').charAt(0).toUpperCase();
+  if (name) name.textContent = `${currentUser.firstName || currentUser.first_name || ''} ${currentUser.lastName || currentUser.last_name || ''}`.trim() || 'Lawyer';
+}
+
+// ── Load dashboard ──
+async function loadDashboard() {
+  try {
+    lawyerData = await VistruAPI.LawyerAPI.getDashboard();
+    renderOverview();
+    renderLandQueue();
+    renderContracts();
+    renderArbitration();
+    renderProfile();
+  } catch (err) {
+    console.error('Dashboard load error:', err);
+    showToast('Failed to load dashboard data.', 'error');
+  }
+}
+
+// ── Render Overview ──
+function renderOverview() {
+  const queue = lawyerData.queue || [];
+  const contracts = lawyerData.contracts || [];
+  const cases = lawyerData.cases || [];
+  const fees = lawyerData.fees || {};
+
+  const pendingCount = queue.length;
+  const activeContractsCount = contracts.filter(c => c.status === 'active').length;
+  const activeCasesCount = cases.filter(c => c.status !== 'ruling_issued').length;
+
+  // Badges
+  if (pendingCount > 0) {
+    document.getElementById('land-badge').textContent = pendingCount;
+    document.getElementById('land-badge').style.display = '';
+  }
+  if (activeCasesCount > 0) {
+    document.getElementById('arb-badge').textContent = activeCasesCount;
+    document.getElementById('arb-badge').style.display = '';
+  }
+
+  document.getElementById('law-metrics').innerHTML = `
+    <div class="metric-card gold">
+      <div class="metric-label">Pending Verifications</div>
+      <div class="metric-value">${pendingCount}</div>
+      <div class="metric-sub">Land documents awaiting review</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Active Contracts</div>
+      <div class="metric-value">${activeContractsCount}</div>
+      <div class="metric-sub">${contracts.length} total drafted</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Arbitration Cases</div>
+      <div class="metric-value">${activeCasesCount}</div>
+      <div class="metric-sub">${cases.length} total assigned</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Contract Fees</div>
+      <div class="metric-value">${formatNaira(fees.contract_fees || 0)}</div>
+      <div class="metric-sub">Earned from active contracts</div>
+    </div>
+  `;
+
+  // Queue summary
+  document.getElementById('overview-queue').innerHTML = queue.length ? queue.slice(0, 4).map(v => `
+    <div class="milestone-item pending-action">
+      <span>📄</span>
+      <div style="flex:1">
+        <div class="milestone-name">${v.title}</div>
+        <div class="milestone-detail">${v.first_name} ${v.last_name} · ${v.site_state || '—'}</div>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="showPanel('land',document.querySelector('[onclick*=land]'))">Review →</button>
+    </div>
+  `).join('') : '<div style="text-align:center;padding:24px;color:var(--slate);font-size:0.85rem">No pending verifications</div>';
+
+  // Recent contracts
+  document.getElementById('overview-contracts').innerHTML = contracts.length ? contracts.slice(0, 4).map(c => `
+    <div class="timeline-item">
+      <div class="timeline-dot ${c.status === 'active' ? 'dot-green' : 'dot-blue'}"></div>
+      <div>
+        <div class="timeline-title">${c.title} — ${c.status}</div>
+        <div class="timeline-meta">${formatNaira(c.contract_value || 0)} · ${formatDate(c.created_at)}</div>
+      </div>
+    </div>
+  `).join('') : '<div style="text-align:center;padding:24px;color:var(--slate);font-size:0.85rem">No contracts yet</div>';
+}
+
+// ── Render Land Queue ──
+function renderLandQueue() {
+  const queue = lawyerData.queue || [];
+
+  document.getElementById('land-queue-content').innerHTML = queue.length ? queue.map(v => `
+    <div class="verification-card urgent">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div style="font-size:1.05rem;font-weight:700;color:var(--navy)">${v.title}</div>
+          <div style="font-size:0.8rem;color:var(--slate);margin-top:2px">Submitted ${formatDate(v.created_at)}</div>
+        </div>
+        <span class="badge ${v.status === 'pending' ? 'badge-amber' : 'badge-blue'}">${v.status.replace(/_/g,' ')}</span>
+      </div>
+      <div class="verification-meta">
+        <div>
+          <div class="verification-meta-label">Client</div>
+          <div class="verification-meta-val">${v.first_name} ${v.last_name}</div>
+        </div>
+        <div>
+          <div class="verification-meta-label">Client Email</div>
+          <div class="verification-meta-val">${v.client_email || '—'}</div>
+        </div>
+        <div>
+          <div class="verification-meta-label">Site Location</div>
+          <div class="verification-meta-val">${v.site_address || '—'}, ${v.site_state || '—'}</div>
+        </div>
+      </div>
+
+      <div style="background:#F5F8FC;border-radius:8px;padding:14px;margin:14px 0">
+        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--slate);margin-bottom:8px">Documents to Review</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          ${v.document_url ? `<a href="${v.document_url}" target="_blank" style="color:var(--gold);font-weight:600;font-size:0.85rem;text-decoration:none">📄 View Land Document</a>` : '<span style="font-size:0.82rem;color:var(--slate)">No documents attached</span>'}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn btn-green btn-sm" onclick="openVerdictModal('${v.id}','${(v.title || '').replace(/'/g,"\\'")}','${v.first_name} ${v.last_name}','${v.site_state || ''}')">✅ Issue Verdict</button>
+      </div>
+    </div>
+  `).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <h4>Verification queue is clear</h4>
+      <p>No land documents are pending your review at this time.</p>
+    </div>
+  `;
+}
+
+// ── Verdict Modal ──
+function openVerdictModal(verificationId, title, clientName, state) {
+  selectedVerificationId = verificationId;
+  document.getElementById('verdict-project-info').innerHTML = `
+    <div style="font-weight:700;margin-bottom:4px">${title}</div>
+    <div style="color:var(--slate);font-size:0.8rem">Client: ${clientName} · ${state}</div>
+  `;
+  document.getElementById('verdict-decision').value = 'verified';
+  document.getElementById('verdict-notes').value = '';
+  document.getElementById('verdict-fee').value = '';
+  document.getElementById('modal-verdict').style.display = 'flex';
+}
+
+async function submitVerdict() {
+  const verdict = document.getElementById('verdict-decision').value;
+  const notes = document.getElementById('verdict-notes').value;
+  const feeCharged = parseFloat(document.getElementById('verdict-fee').value) || 0;
+
+  if (!notes.trim()) {
+    showToast('Please provide your findings in the notes field.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('verdict-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+  try {
+    await VistruAPI.LawyerAPI.issueLandVerdict(selectedVerificationId, { verdict, notes, feeCharged });
+    showToast(`✅ Land marked as ${verdict}. Client has been notified.`, 'success');
+    closeModal('modal-verdict');
+    await loadDashboard();
+  } catch (err) {
+    showToast(err.message || 'Could not submit verdict.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Submit Verdict →';
+  }
+}
+
+// ── Render Contracts ──
+function renderContracts() {
+  const contracts = lawyerData.contracts || [];
+
+  document.getElementById('contracts-content').innerHTML = contracts.length ? contracts.map(c => `
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        <div class="card-title">${c.title || 'Contract #' + c.id}</div>
+        <span class="badge ${c.status === 'active' ? 'badge-green' : c.status === 'draft' ? 'badge-amber' : 'badge-slate'}">${c.status}</span>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <div style="font-size:0.68rem;text-transform:uppercase;font-weight:600;color:var(--slate);letter-spacing:0.06em">Contract Value</div>
+            <div style="font-size:0.9rem;font-weight:700;color:var(--navy);margin-top:2px">${formatNaira(c.contract_value || 0)}</div>
+          </div>
+          <div>
+            <div style="font-size:0.68rem;text-transform:uppercase;font-weight:600;color:var(--slate);letter-spacing:0.06em">Duration</div>
+            <div style="font-size:0.9rem;font-weight:700;color:var(--navy);margin-top:2px">${c.duration_months || '—'} months</div>
+          </div>
+          <div>
+            <div style="font-size:0.68rem;text-transform:uppercase;font-weight:600;color:var(--slate);letter-spacing:0.06em">Your Fee (1%)</div>
+            <div style="font-size:0.9rem;font-weight:700;color:var(--green);margin-top:2px">${formatNaira(c.lawyer_fee || 0)}</div>
+          </div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--slate)">
+          ${c.site_state ? `Location: ${c.site_state} · ` : ''}Drafted: ${formatDate(c.created_at)}
+          ${c.special_conditions ? `<br>Special conditions: ${c.special_conditions}` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">📜</div>
+      <h4>No contracts yet</h4>
+      <p>Contracts will appear here once clients select engineers and you draft agreements.</p>
+    </div>
+  `;
+}
+
+// ── Render Arbitration ──
+function renderArbitration() {
+  const cases = lawyerData.cases || [];
+
+  document.getElementById('arbitration-content').innerHTML = cases.length ? cases.map(c => `
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        <div class="card-title">${c.case_reference || 'Case #' + c.id}</div>
+        <span class="badge ${c.status === 'ruling_issued' ? 'badge-green' : c.status === 'scheduled' ? 'badge-blue' : 'badge-amber'}">${c.status.replace(/_/g,' ')}</span>
+      </div>
+      <div class="card-body">
+        <div style="font-size:0.9rem;margin-bottom:12px;line-height:1.6">${c.description || 'No description provided.'}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+          <div>
+            <div style="font-size:0.68rem;text-transform:uppercase;font-weight:600;color:var(--slate);letter-spacing:0.06em">Disputed Amount</div>
+            <div style="font-size:0.9rem;font-weight:700;color:var(--navy);margin-top:2px">${formatNaira(c.disputed_amount || 0)}</div>
+          </div>
+          <div>
+            <div style="font-size:0.68rem;text-transform:uppercase;font-weight:600;color:var(--slate);letter-spacing:0.06em">Filed By</div>
+            <div style="font-size:0.9rem;font-weight:600;color:var(--navy);margin-top:2px">${c.filed_by_name || '—'}</div>
+          </div>
+          <div>
+            <div style="font-size:0.68rem;text-transform:uppercase;font-weight:600;color:var(--slate);letter-spacing:0.06em">Filed Date</div>
+            <div style="font-size:0.9rem;font-weight:600;color:var(--navy);margin-top:2px">${formatDate(c.filed_at)}</div>
+          </div>
+        </div>
+
+        ${c.hearing_date ? `
+          <div class="alert alert-blue" style="margin-bottom:14px">
+            📅 Hearing scheduled: <strong>${new Date(c.hearing_date).toLocaleString('en-NG', { dateStyle:'long', timeStyle:'short' })}</strong>
+          </div>
+        ` : ''}
+
+        ${c.ruling ? `
+          <div class="alert alert-green" style="margin-bottom:14px">
+            ⚖️ <strong>Ruling:</strong> ${c.ruling}
+          </div>
+        ` : ''}
+
+        <div style="display:flex;gap:10px">
+          ${c.status === 'filed' || c.status === 'assigned' ? `
+            <button class="btn btn-navy btn-sm" onclick="openHearingModal('${c.id}','${(c.case_reference || '').replace(/'/g,"\\'")}')">📅 Schedule Hearing</button>
+          ` : ''}
+          ${c.status === 'scheduled' ? `
+            <button class="btn btn-primary btn-sm" onclick="openRulingModal('${c.id}','${(c.case_reference || '').replace(/'/g,"\\'")}')">⚖️ Issue Ruling</button>
+          ` : ''}
+          ${c.status === 'ruling_issued' ? `
+            <span style="font-size:0.82rem;color:var(--green);font-weight:600">✓ Ruling issued ${formatDate(c.ruling_issued_at)}</span>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">⚖️</div>
+      <h4>No arbitration cases</h4>
+      <p>Cases assigned to you by the platform admin will appear here.</p>
+    </div>
+  `;
+}
+
+// ── Hearing Modal ──
+function openHearingModal(caseId, caseRef) {
+  selectedCaseId = caseId;
+  document.getElementById('hearing-case-info').innerHTML = `<div style="font-weight:700">${caseRef}</div>`;
+  document.getElementById('hearing-date').value = '';
+  document.getElementById('modal-hearing').style.display = 'flex';
+}
+
+async function confirmScheduleHearing() {
+  const hearingDate = document.getElementById('hearing-date').value;
+  if (!hearingDate) {
+    showToast('Please select a date and time for the hearing.', 'error');
+    return;
+  }
+  try {
+    await VistruAPI.LawyerAPI.scheduleHearing(selectedCaseId, hearingDate);
+    showToast('📅 Hearing scheduled successfully.', 'success');
+    closeModal('modal-hearing');
+    await loadDashboard();
+  } catch (err) {
+    showToast(err.message || 'Could not schedule hearing.', 'error');
+  }
+}
+
+// ── Ruling Modal ──
+function openRulingModal(caseId, caseRef) {
+  selectedCaseId = caseId;
+  document.getElementById('ruling-case-info').innerHTML = `<div style="font-weight:700">${caseRef}</div>`;
+  document.getElementById('ruling-text').value = '';
+  document.getElementById('modal-ruling').style.display = 'flex';
+}
+
+async function confirmIssueRuling() {
+  const ruling = document.getElementById('ruling-text').value;
+  if (!ruling.trim()) {
+    showToast('Please write your ruling before submitting.', 'error');
+    return;
+  }
+  if (!confirm('Issue this ruling? This action is binding and cannot be reversed.')) return;
+  try {
+    await VistruAPI.LawyerAPI.issueRuling(selectedCaseId, ruling);
+    showToast('⚖️ Ruling issued successfully.', 'success');
+    closeModal('modal-ruling');
+    await loadDashboard();
+  } catch (err) {
+    showToast(err.message || 'Could not issue ruling.', 'error');
+  }
+}
+
+// ── Profile ──
+function renderProfile() {
+  const user = currentUser || {};
+
+  document.getElementById('profile-content').innerHTML = `
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Personal Information</div></div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">Name</div><div class="timeline-meta">${user.first_name || user.firstName || ''} ${user.last_name || user.lastName || ''}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">Email</div><div class="timeline-meta">${user.email || '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">Phone</div><div class="timeline-meta">${user.phone || '—'}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-blue"></div><div><div class="timeline-title">Account Status</div><div class="timeline-meta" style="text-transform:capitalize">${user.status || '—'}</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Legal Credentials</div></div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Role</div><div class="timeline-meta">Platform Lawyer</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Total Contracts</div><div class="timeline-meta">${(lawyerData?.contracts || []).length}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Arbitration Cases</div><div class="timeline-meta">${(lawyerData?.cases || []).length}</div></div></div>
+            <div class="timeline-item"><div class="timeline-dot dot-gold"></div><div><div class="timeline-title">Contract Fees Earned</div><div class="timeline-meta">${formatNaira(lawyerData?.fees?.contract_fees || 0)}</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Shared ──
+function showPanel(id, el) {
+  document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('panel-' + id)?.classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+async function handleLogout() {
+  await VistruAPI.AuthAPI.logout();
+}
+
+function updateNavAuth() {}
+</script>
+</body>
+</html>
